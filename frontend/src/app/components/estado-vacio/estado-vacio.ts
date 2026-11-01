@@ -21,18 +21,21 @@ import { MatIconModule } from '@angular/material/icon';
       flex-direction: column;
       align-items: center;
       text-align: center;
-      padding: 32px 16px;
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 48px 20px;
       color: var(--mat-sys-on-surface-variant);
       gap: 4px;
     }
     mat-icon {
+      color: #f5c451;
       font-size: 48px;
       width: 48px;
       height: 48px;
       opacity: 0.7;
     }
-    h3 { margin: 8px 0 0; color: var(--mat-sys-on-surface); }
-    p { margin: 0 0 12px; }
+    h3 { margin: 8px 0 0; color: #f3f6fa; font-size: 1.25rem; }
+    p { margin: 0 0 12px; color: #aab7c8; line-height: 1.5; }
   `,
 })
 export class EstadoVacio {

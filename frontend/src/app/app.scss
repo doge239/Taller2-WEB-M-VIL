@@ -6,16 +6,10 @@
   gap: 4px;
   height: 64px !important;
 
-  /* Gradiente glossy oscuro */
-  background: linear-gradient(
-    135deg,
-    rgba(26, 5, 51, 0.95) 0%,
-    rgba(37, 12, 70, 0.95) 50%,
-    rgba(15, 23, 42, 0.95) 100%
-  ) !important;
+  background: rgba(13, 22, 36, 0.97) !important;
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-bottom: 1px solid rgba(139, 92, 246, 0.2) !important;
+  border-bottom: 1px solid rgba(245, 196, 81, 0.18) !important;
   box-shadow: 0 4px 32px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255,255,255,0.05) !important;
 
   color: rgba(255, 255, 255, 0.92);
@@ -43,8 +37,7 @@
     font-size: 26px;
     width: 26px;
     height: 26px;
-    color: #c084fc;
-    filter: drop-shadow(0 0 8px rgba(192, 132, 252, 0.5));
+    color: #f5c451;
   }
 
   &:hover { opacity: 0.85; }
@@ -52,10 +45,7 @@
 
 /* Texto del logo con gradiente */
 .marca-texto {
-  background: linear-gradient(135deg, #e9d5ff 0%, #93c5fd 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #f3f6fa;
 }
 
 .espaciador {
@@ -64,7 +54,7 @@
 
 /* ─── BOTONES DE NAV ─────────────────────────────────────────────── */
 .activo {
-  background: rgba(139, 92, 246, 0.2) !important;
+  background: rgba(79, 142, 247, 0.18) !important;
   border-radius: 8px;
 }
 

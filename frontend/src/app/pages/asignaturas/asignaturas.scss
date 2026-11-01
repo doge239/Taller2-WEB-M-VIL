@@ -12,18 +12,38 @@
     font-size: 2rem;
     font-weight: 700;
     letter-spacing: -0.04em;
-    /* Gradiente en el título */
-    background: linear-gradient(135deg, #e9d5ff 0%, #93c5fd 60%, #67e8f9 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #f3f6fa;
   }
 
   .subtitulo {
     margin: 6px 0 0;
-    color: rgba(255, 255, 255, 0.45);
+    color: #aab7c8;
     font-size: 0.95rem;
   }
+
+}
+
+.metricas-semestre {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+
+  .metrica {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 72px;
+    padding: 15px 16px;
+    box-sizing: border-box;
+    border: 1px solid rgba(170, 183, 200, 0.14);
+    border-radius: 12px;
+    background: #182538;
+  }
+
+  mat-icon { color: #f5c451; }
+  span { display: grid; gap: 3px; color: #aab7c8; font-size: 0.78rem; }
+  strong { color: #f3f6fa; font-size: 1.25rem; }
 }
 
 /* ─── ESTADOS ────────────────────────────────────────────────────── */
@@ -46,12 +66,11 @@
   align-items: center;
   margin-bottom: 24px;
 
-  /* Fondo glass en los form-fields */
   mat-form-field {
     .mdc-text-field--outlined .mdc-notched-outline__leading,
     .mdc-text-field--outlined .mdc-notched-outline__notch,
     .mdc-text-field--outlined .mdc-notched-outline__trailing {
-      border-color: rgba(139, 92, 246, 0.3) !important;
+      border-color: rgba(79, 142, 247, 0.34) !important;
     }
   }
 }
@@ -68,14 +87,21 @@
 
 /* ─── CARD DE ASIGNATURA ─────────────────────────────────────────── */
 .asignatura {
-  padding: 4px 0 0;
+  padding: 8px 0 0;
   cursor: default;
+  border-color: rgba(170, 183, 200, 0.14) !important;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    border-color: rgba(79, 142, 247, 0.55) !important;
+    transform: translateY(-2px);
+  }
 
   mat-card-title {
     font-size: 1.1rem;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: -0.02em;
-    color: rgba(255, 255, 255, 0.92);
+    color: #f3f6fa;
   }
 
   mat-card-subtitle {
@@ -85,16 +111,34 @@
     gap: 6px;
     align-items: center;
   }
+
+  .codigo {
+    padding: 3px 8px;
+    border: 1px solid rgba(79, 142, 247, 0.28);
+    border-radius: 5px;
+    color: #8db9ff;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+  }
 }
 
 /* Separador sutil entre header y acciones */
 mat-card-actions {
-  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
-  padding: 8px 8px 8px !important;
+  border-top: 1px solid rgba(170, 183, 200, 0.12) !important;
+  gap: 4px;
+  padding: 10px 12px 10px !important;
+
+  .boton-notas {
+    margin-left: auto;
+    background: #4f8ef7 !important;
+    color: #07111f !important;
+  }
 }
 
 /* ─── RESPONSIVE ─────────────────────────────────────────────────── */
 @media (max-width: 600px) {
+  .metricas-semestre { grid-template-columns: 1fr; }
   .encabezado {
     h1 { font-size: 1.5rem; }
     /* Botón "Nueva asignatura" ocupa todo el ancho */
@@ -107,4 +151,9 @@ mat-card-actions {
   }
 
   .filtro-semestre { flex: 1 1 100%; }
+
+  mat-card-actions {
+    flex-wrap: wrap;
+    .boton-notas { flex: 1 0 100%; margin: 4px 0 0; justify-content: center; }
+  }
 }

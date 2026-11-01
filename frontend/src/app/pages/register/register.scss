@@ -1,32 +1,107 @@
-/* ─── CARD DE REGISTRO (idéntica al login) ───────────────────────── */
+.registro-layout {
+  width: min(100%, 980px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 460px);
+  align-items: center;
+  gap: 48px;
+}
+
+.registro-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 42px;
+  color: #f3f6fa;
+}
+
+.registro-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #f5c451;
+  font-weight: 700;
+}
+
+.registro-brand mat-icon { color: #f5c451; }
+
+.registro-copy {
+  max-width: 450px;
+
+  .eyebrow {
+    margin: 0 0 16px;
+    color: #f5c451;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 0;
+    color: #f3f6fa;
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    letter-spacing: -0.055em;
+    line-height: 0.98;
+  }
+
+  p:last-child {
+    margin: 24px 0 0;
+    color: #aab7c8;
+    line-height: 1.65;
+  }
+}
+
+.pasos {
+  display: grid;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  li > span {
+    display: grid;
+    width: 30px;
+    height: 30px;
+    place-items: center;
+    border: 1px solid rgba(245, 196, 81, 0.45);
+    border-radius: 50%;
+    color: #f5c451;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  div { display: grid; gap: 2px; }
+  strong { color: #f3f6fa; font-size: 0.9rem; }
+  small { color: #aab7c8; }
+}
+
 .tarjeta {
   width: 100%;
   max-width: 460px;
   padding: 12px;
 
-  background: rgba(255, 255, 255, 0.04) !important;
-  backdrop-filter: blur(24px) saturate(160%);
-  -webkit-backdrop-filter: blur(24px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: #182538 !important;
+  border: 1px solid rgba(170, 183, 200, 0.16) !important;
   box-shadow:
-    0 8px 40px rgba(0, 0, 0, 0.5),
-    0 2px 0 rgba(255, 255, 255, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
-  border-radius: 20px !important;
+    0 18px 48px rgba(4, 10, 20, 0.35),
+    0 1px 0 rgba(255, 255, 255, 0.04) !important;
+  border-radius: 14px !important;
   animation: fadeUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
 
   mat-card-title {
     font-size: 1.6rem !important;
     font-weight: 700 !important;
     letter-spacing: -0.03em;
-    background: linear-gradient(135deg, #e9d5ff, #93c5fd);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #f3f6fa !important;
   }
 
   mat-card-subtitle {
-    color: rgba(255, 255, 255, 0.5) !important;
+    color: #aab7c8 !important;
     margin-top: 4px !important;
   }
 }
@@ -51,12 +126,14 @@
   font-weight: 600 !important;
   letter-spacing: 0.01em;
   border-radius: 12px !important;
-  background: linear-gradient(135deg, #7c3aed, #2563eb) !important;
-  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4) !important;
+  background: #4f8ef7 !important;
+  color: #07111f !important;
+  box-shadow: 0 8px 18px rgba(79, 142, 247, 0.24) !important;
   transition: box-shadow 0.2s ease, transform 0.1s ease !important;
 
   &:not(:disabled):hover {
-    box-shadow: 0 6px 28px rgba(124, 58, 237, 0.6) !important;
+    background: #6ca3ff !important;
+    box-shadow: 0 10px 24px rgba(79, 142, 247, 0.34) !important;
     transform: translateY(-1px);
   }
 
@@ -68,14 +145,21 @@
 .alterno {
   text-align: center;
   font-size: 0.88rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: #aab7c8;
 
   a {
-    color: #c084fc;
-    text-decoration: none;
-    font-weight: 500;
+    color: #f5c451;
+    font-weight: 600;
     transition: color 0.15s;
 
-    &:hover { color: #e9d5ff; }
+    &:hover { color: #ffe08a; }
   }
+}
+
+@media (max-width: 760px) {
+  .registro-layout { display: block; width: min(100%, 460px); }
+  .registro-intro { gap: 24px; padding: 8px 0 28px; }
+  .registro-copy { margin-top: 20px; }
+  .registro-copy h1 { font-size: clamp(2.3rem, 12vw, 3.2rem); }
+  .pasos { display: none; }
 }

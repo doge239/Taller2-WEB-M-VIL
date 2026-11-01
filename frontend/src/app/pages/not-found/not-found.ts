@@ -10,10 +10,10 @@ import { EstadoVacio } from '../../components/estado-vacio/estado-vacio';
     <div class="pagina">
       <app-estado-vacio
         icono="travel_explore"
-        titulo="Página no encontrada"
-        descripcion="La dirección que buscas no existe."
+        titulo="Esta página no está en tu plan de estudio"
+        descripcion="La dirección no existe o fue movida."
       >
-        <a mat-flat-button routerLink="/">Volver al inicio</a>
+        <a mat-flat-button routerLink="/asignaturas">Volver a mis asignaturas</a>
       </app-estado-vacio>
     </div>
   `,

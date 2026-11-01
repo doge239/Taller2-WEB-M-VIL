@@ -23,10 +23,7 @@
     font-size: 1.9rem;
     font-weight: 700;
     letter-spacing: -0.04em;
-    background: linear-gradient(135deg, #e9d5ff 0%, #93c5fd 70%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #f3f6fa;
   }
 
   .subtitulo {
@@ -40,7 +37,7 @@
 .seccion {
   margin-bottom: 20px;
   padding-bottom: 8px;
-  border-radius: 16px !important;
+  border-radius: 14px !important;
 }
 
 .cabecera-resumen {
@@ -56,10 +53,9 @@
   mat-card-title {
     font-size: 1rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-size: 0.8rem;
+    color: #f3f6fa;
+    letter-spacing: -0.02em;
+    font-size: 1.05rem;
   }
 }
 
@@ -78,7 +74,7 @@
 
   /* Scrollbar horizontal fino */
   &::-webkit-scrollbar { height: 4px; }
-  &::-webkit-scrollbar-thumb { background: rgba(139, 92, 246, 0.4); border-radius: 2px; }
+  &::-webkit-scrollbar-thumb { background: rgba(79, 142, 247, 0.45); border-radius: 2px; }
 }
 
 table {
@@ -89,7 +85,7 @@ table {
 
 /* Filas con hover suave */
 tr.mat-mdc-row:hover {
-  background: rgba(139, 92, 246, 0.07) !important;
+  background: rgba(79, 142, 247, 0.08) !important;
   transition: background 0.15s ease;
 }
 

@@ -1,11 +1,29 @@
 <div class="pagina-centrada">
-  <mat-card class="tarjeta" appearance="outlined">
-    <mat-card-header>
-      <mat-card-title>Crear cuenta</mat-card-title>
-      <mat-card-subtitle>Empieza a organizar tus notas</mat-card-subtitle>
-    </mat-card-header>
+  <div class="registro-layout">
+    <section class="registro-intro" aria-labelledby="registro-intro-title">
+      <div class="registro-brand">
+        <mat-icon aria-hidden="true">school</mat-icon>
+        <span>Gestor de notas</span>
+      </div>
+      <div class="registro-copy">
+        <p class="eyebrow">Un espacio para tu semestre</p>
+        <h1 id="registro-intro-title">Empieza a ordenar tus metas.</h1>
+        <p>Registra tus ramos, agrega evaluaciones y toma decisiones con tus números a la vista.</p>
+      </div>
+      <ol class="pasos">
+        <li><span>1</span><div><strong>Registra</strong><small>Tus asignaturas y semestre.</small></div></li>
+        <li><span>2</span><div><strong>Organiza</strong><small>Tus evaluaciones y ponderaciones.</small></div></li>
+        <li><span>3</span><div><strong>Avanza</strong><small>Conoce la nota que necesitas.</small></div></li>
+      </ol>
+    </section>
 
-    <form [formGroup]="form" (ngSubmit)="registrar()" novalidate>
+    <mat-card class="tarjeta" appearance="outlined">
+      <mat-card-header>
+        <mat-card-title>Crear cuenta</mat-card-title>
+        <mat-card-subtitle>Empieza a organizar tu semestre</mat-card-subtitle>
+      </mat-card-header>
+
+      <form [formGroup]="form" (ngSubmit)="registrar()" novalidate>
       <mat-card-content class="contenido">
         <mat-form-field appearance="outline" class="campo-completo">
           <mat-label>Nombre</mat-label>
@@ -80,6 +98,7 @@
           ¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a>
         </span>
       </mat-card-actions>
-    </form>
-  </mat-card>
+      </form>
+    </mat-card>
+  </div>
 </div>

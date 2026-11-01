@@ -68,6 +68,9 @@ export class Asignaturas {
 
   protected readonly hayFiltros = computed(() => !!this.texto().trim() || !!this.semestre());
 
+  protected readonly cantidadAsignaturas = computed(() => (this.lista.value() ?? []).length);
+  protected readonly cantidadSemestres = computed(() => this.semestres().length);
+
   protected readonly mensajeError = computed(() =>
     this.notificaciones.mensajeDeError(this.lista.error(), 'No se pudieron cargar las asignaturas'),
   );

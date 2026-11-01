@@ -2,12 +2,20 @@
   <header class="encabezado">
     <div>
       <h1>Mis asignaturas</h1>
-      <p class="subtitulo">Hola, {{ auth.usuario()?.nombre }}. Revisa y organiza tus ramos.</p>
+      <p class="subtitulo">Hola, {{ auth.usuario()?.nombre }}. Este es tu semestre.</p>
     </div>
     <button mat-flat-button (click)="nueva()">
       <mat-icon>add</mat-icon> Nueva asignatura
     </button>
   </header>
+
+  @if (!lista.isLoading() && !lista.error() && cantidadAsignaturas() > 0) {
+    <div class="metricas-semestre" aria-label="Resumen del semestre">
+      <div class="metrica"><mat-icon aria-hidden="true">menu_book</mat-icon><span><strong>{{ cantidadAsignaturas() }}</strong>Asignaturas</span></div>
+      <div class="metrica"><mat-icon aria-hidden="true">calendar_month</mat-icon><span><strong>{{ cantidadSemestres() }}</strong>Semestres activos</span></div>
+      <div class="metrica"><mat-icon aria-hidden="true">task_alt</mat-icon><span><strong>{{ filtradas().length }}</strong>Resultados visibles</span></div>
+    </div>
+  }
 
   @if (lista.isLoading() && !lista.hasValue()) {
     <div class="centro"><mat-spinner diameter="48" /></div>
@@ -75,7 +83,10 @@
               <mat-card-header>
                 <mat-card-title>{{ a.nombre }}</mat-card-title>
                 <mat-card-subtitle>
-                  {{ a.codigo ? a.codigo + ' · ' : '' }}Semestre {{ a.semestre }}
+                  @if (a.codigo) {
+                    <span class="codigo">{{ a.codigo }}</span>
+                  }
+                  <span>Semestre {{ a.semestre }}</span>
                 </mat-card-subtitle>
               </mat-card-header>
               <mat-card-actions align="end">
@@ -85,7 +96,7 @@
                 <button mat-icon-button matTooltip="Eliminar" aria-label="Eliminar" (click)="eliminar(a)">
                   <mat-icon>delete</mat-icon>
                 </button>
-                <a mat-flat-button [routerLink]="['/asignaturas', a.id]">
+                <a mat-flat-button class="boton-notas" [routerLink]="['/asignaturas', a.id]">
                   Ver notas <mat-icon iconPositionEnd>arrow_forward</mat-icon>
                 </a>
               </mat-card-actions>
