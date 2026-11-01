@@ -78,10 +78,33 @@ POSTGRES_HOST=127.0.0.1
 JWT_SECRET=reemplaza_esto_por_un_secreto_de_al_menos_32_caracteres
 JWT_ACCESS_TOKEN_EXPIRE_MINUTES=30
 ALLOWED_ORIGINS=http://localhost:4200
+SEED_TEST_USERS=true
 ```
 
 > **Importante**: `JWT_SECRET` debe tener al menos 32 caracteres aleatorios.  
 > Puedes generar uno con: `python -c "import secrets; print(secrets.token_hex(32))"`
+
+Con `SEED_TEST_USERS=true`, el backend crea automáticamente las cuentas de
+prueba al iniciar por primera vez y no las duplica en arranques posteriores.
+Desactívalo en entornos que no sean de desarrollo.
+
+### Cuentas de prueba
+
+Estas cuentas se crean automáticamente para probar el login y los flujos
+aislados por usuario:
+
+| # | Nombre | Correo | Contraseña |
+|---:|---|---|---|
+| 1 | Ana Torres | `ana.prueba@example.com` | `Notas2026!01` |
+| 2 | Bruno Soto | `bruno.prueba@example.com` | `Notas2026!02` |
+| 3 | Camila Rojas | `camila.prueba@example.com` | `Notas2026!03` |
+| 4 | Diego Pérez | `diego.prueba@example.com` | `Notas2026!04` |
+| 5 | Elena Muñoz | `elena.prueba@example.com` | `Notas2026!05` |
+| 6 | Felipe Castro | `felipe.prueba@example.com` | `Notas2026!06` |
+| 7 | Gabriela Silva | `gabriela.prueba@example.com` | `Notas2026!07` |
+| 8 | Hugo Vargas | `hugo.prueba@example.com` | `Notas2026!08` |
+| 9 | Isidora Pérez | `isidora.prueba@example.com` | `Notas2026!09` |
+| 10 | Javier Morales | `javier.prueba@example.com` | `Notas2026!10` |
 
 ---
 
