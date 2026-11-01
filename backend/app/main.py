@@ -7,10 +7,13 @@ from sqlalchemy.orm import Session
 
 from . import models
 from .database import Base, engine, get_db
+from .routers import asignaturas_router, auth_router, evaluaciones_router
+from .security import jwt_settings
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    jwt_settings()
     # Los modelos deben estar importados antes de crear las tablas.
     Base.metadata.create_all(bind=engine)
 
@@ -22,10 +25,13 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="Gestor de notas universitarias",
-    description="Etapa 1: base de datos y backend inicial.",
-    version="0.1.0",
+    description="API para gestionar notas con autenticación JWT.",
+    version="0.2.0",
     lifespan=lifespan,
 )
+app.include_router(auth_router)
+app.include_router(asignaturas_router)
+app.include_router(evaluaciones_router)
 
 
 @app.get("/")
