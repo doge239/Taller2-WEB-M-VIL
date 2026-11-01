@@ -1,0 +1,37 @@
+.volver { margin-left: -8px; margin-bottom: 8px; }
+
+.encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  h1 { margin: 0; font-size: 1.8rem; font-weight: 500; }
+  .subtitulo { margin: 4px 0 0; color: var(--mat-sys-on-surface-variant); }
+}
+
+.seccion { margin-bottom: 20px; padding-bottom: 8px; }
+
+.cabecera-resumen {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 16px 16px 12px;
+  ::ng-deep .mat-mdc-card-header-text { flex: 1; }
+}
+.campo-meta { width: 140px; }
+
+.centro { display: flex; justify-content: center; padding: 64px 0; }
+.centro-pequeno { display: flex; justify-content: center; padding: 24px 0; }
+.error-texto { color: var(--mat-sys-error); }
+
+.tabla-contenedor { overflow-x: auto; }
+table { width: 100%; background: transparent; }
+.col-acciones { text-align: right; white-space: nowrap; width: 1%; }
+
+.nota { font-weight: 500; &.reprobada { color: var(--mat-sys-error); } }
+.pendiente { color: var(--mat-sys-on-surface-variant); font-style: italic; }
+.total { margin: 12px 0 0; font-size: 0.85rem; color: var(--mat-sys-on-surface-variant); }

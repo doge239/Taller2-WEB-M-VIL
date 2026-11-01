@@ -1,0 +1,144 @@
+<div class="pagina">
+  <a mat-button routerLink="/asignaturas" class="volver">
+    <mat-icon>arrow_back</mat-icon> Mis asignaturas
+  </a>
+
+  @if (noEncontrada()) {
+    <app-estado-vacio
+      icono="search_off"
+      titulo="Asignatura no encontrada"
+      descripcion="No existe o no te pertenece."
+    >
+      <a mat-flat-button routerLink="/asignaturas">Volver al listado</a>
+    </app-estado-vacio>
+  } @else if (asignatura.isLoading() && !asignatura.hasValue()) {
+    <div class="centro"><mat-spinner diameter="48" /></div>
+  } @else if (asignatura.error()) {
+    <app-estado-vacio icono="cloud_off" titulo="No se pudo cargar" [descripcion]="mensajeError()">
+      <button mat-stroked-button (click)="asignatura.reload()">
+        <mat-icon>refresh</mat-icon> Reintentar
+      </button>
+    </app-estado-vacio>
+  } @else if (asignatura.value(); as a) {
+    <header class="encabezado">
+      <div>
+        <h1>{{ a.nombre }}</h1>
+        <p class="subtitulo">{{ a.codigo ? a.codigo + ' · ' : '' }}Semestre {{ a.semestre }}</p>
+      </div>
+      <div class="acciones-fila">
+        <button mat-stroked-button (click)="editarAsignatura()">
+          <mat-icon>edit</mat-icon> Editar
+        </button>
+        <button mat-stroked-button (click)="eliminarAsignatura()">
+          <mat-icon>delete</mat-icon> Eliminar
+        </button>
+      </div>
+    </header>
+
+    <!-- Resumen -->
+    <mat-card appearance="outlined" class="seccion">
+      <mat-card-header class="cabecera-resumen">
+        <mat-card-title>Resumen</mat-card-title>
+        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="campo-meta">
+          <mat-label>Meta de nota</mat-label>
+          <input
+            matInput
+            type="number"
+            min="1"
+            max="7"
+            step="0.1"
+            inputmode="decimal"
+            [value]="meta()"
+            (change)="cambiarMeta($any($event.target).value)"
+          />
+        </mat-form-field>
+      </mat-card-header>
+      <mat-card-content>
+        @if (resumen.isLoading() && !resumen.hasValue()) {
+          <div class="centro-pequeno"><mat-spinner diameter="32" /></div>
+        } @else if (resumen.error()) {
+          <p class="error-texto">No se pudo calcular el resumen.</p>
+        } @else if (resumen.value(); as r) {
+          @if (resumen.isLoading()) {
+            <mat-progress-bar mode="indeterminate" />
+          }
+          <app-resumen-asignatura [resumen]="r" />
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Evaluaciones -->
+    <mat-card appearance="outlined" class="seccion">
+      <mat-card-header class="cabecera-resumen">
+        <mat-card-title>Evaluaciones</mat-card-title>
+        <button mat-flat-button (click)="abrirEvaluacion(null)" [disabled]="ponderacionUsada() >= 100">
+          <mat-icon>add</mat-icon> Nueva evaluación
+        </button>
+      </mat-card-header>
+
+      <mat-card-content>
+        @if (evaluaciones.isLoading() && !evaluaciones.hasValue()) {
+          <div class="centro-pequeno"><mat-spinner diameter="32" /></div>
+        } @else if (evaluaciones.error()) {
+          <app-estado-vacio icono="cloud_off" titulo="No se pudieron cargar las evaluaciones" [descripcion]="mensajeError()">
+            <button mat-stroked-button (click)="evaluaciones.reload()">Reintentar</button>
+          </app-estado-vacio>
+        } @else if ((evaluaciones.value() ?? []).length === 0) {
+          <app-estado-vacio
+            icono="fact_check"
+            titulo="Sin evaluaciones"
+            descripcion="Agrega certámenes, tareas o controles con su ponderación."
+          >
+            <button mat-flat-button (click)="abrirEvaluacion(null)">
+              <mat-icon>add</mat-icon> Agregar evaluación
+            </button>
+          </app-estado-vacio>
+        } @else {
+          @if (evaluaciones.isLoading()) {
+            <mat-progress-bar mode="indeterminate" />
+          }
+          <div class="tabla-contenedor">
+            <table mat-table [dataSource]="evaluaciones.value() ?? []">
+              <ng-container matColumnDef="nombre">
+                <th mat-header-cell *matHeaderCellDef>Evaluación</th>
+                <td mat-cell *matCellDef="let e">{{ e.nombre }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="ponderacion">
+                <th mat-header-cell *matHeaderCellDef>Ponderación</th>
+                <td mat-cell *matCellDef="let e">{{ e.ponderacion | number: '1.0-2' }}%</td>
+              </ng-container>
+
+              <ng-container matColumnDef="nota">
+                <th mat-header-cell *matHeaderCellDef>Nota</th>
+                <td mat-cell *matCellDef="let e">
+                  @if (e.nota !== null) {
+                    <span class="nota" [class.reprobada]="e.nota < 4">{{ e.nota | number: '1.1-2' }}</span>
+                  } @else {
+                    <span class="pendiente">Pendiente</span>
+                  }
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="acciones">
+                <th mat-header-cell *matHeaderCellDef class="col-acciones"></th>
+                <td mat-cell *matCellDef="let e" class="col-acciones">
+                  <button mat-icon-button matTooltip="Editar" aria-label="Editar evaluación" (click)="abrirEvaluacion(e)">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button matTooltip="Eliminar" aria-label="Eliminar evaluación" (click)="eliminarEvaluacion(e)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+              <tr mat-row *matRowDef="let row; columns: columnas"></tr>
+            </table>
+          </div>
+          <p class="total">Ponderación asignada: {{ ponderacionUsada() | number: '1.0-2' }}% de 100%</p>
+        }
+      </mat-card-content>
+    </mat-card>
+  }
+</div>

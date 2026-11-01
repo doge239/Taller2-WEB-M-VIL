@@ -1,0 +1,41 @@
+<mat-toolbar class="barra">
+  <a class="marca" routerLink="/">
+    <mat-icon>school</mat-icon>
+    <span class="marca-texto">Gestor de notas</span>
+  </a>
+
+  <span class="espaciador"></span>
+
+  @if (auth.autenticado()) {
+    <a mat-button routerLink="/asignaturas" routerLinkActive="activo" class="enlace-escritorio">
+      <mat-icon>menu_book</mat-icon> Asignaturas
+    </a>
+
+    <button mat-button [matMenuTriggerFor]="menuUsuario" aria-label="Menú de usuario">
+      <mat-icon>account_circle</mat-icon>
+      <span class="nombre-usuario">{{ auth.usuario()?.nombre }}</span>
+    </button>
+    <mat-menu #menuUsuario="matMenu">
+      <div class="menu-cabecera">
+        <strong>{{ auth.usuario()?.nombre }}</strong>
+        <small>{{ auth.usuario()?.correo }}</small>
+      </div>
+      <mat-divider></mat-divider>
+      <a mat-menu-item routerLink="/asignaturas">
+        <mat-icon>menu_book</mat-icon>
+        <span>Mis asignaturas</span>
+      </a>
+      <button mat-menu-item (click)="cerrarSesion()">
+        <mat-icon>logout</mat-icon>
+        <span>Cerrar sesión</span>
+      </button>
+    </mat-menu>
+  } @else {
+    <a mat-button routerLink="/login" routerLinkActive="activo">Iniciar sesión</a>
+    <a mat-flat-button routerLink="/registro">Registrarse</a>
+  }
+</mat-toolbar>
+
+<main>
+  <router-outlet />
+</main>

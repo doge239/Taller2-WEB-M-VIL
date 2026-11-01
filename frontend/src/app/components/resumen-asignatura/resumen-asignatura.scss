@@ -1,0 +1,43 @@
+:host { display: block; }
+
+.mensaje {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  background: var(--mat-sys-surface-container);
+  &.ok   { background: #e3f4e5; color: #1b5e20; }
+  &.mal  { background: var(--mat-sys-error-container); color: var(--mat-sys-on-error-container); }
+  &.info { background: var(--mat-sys-primary-container); color: var(--mat-sys-on-primary-container); }
+}
+
+.progreso { margin-bottom: 16px; }
+.progreso-etiqueta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+}
+
+.metricas {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.metrica {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--mat-sys-surface-container-low);
+}
+.etiqueta { font-size: 0.8rem; color: var(--mat-sys-on-surface-variant); }
+.valor { font-size: 1.5rem; font-weight: 500; }
+
+.detalle { margin: 12px 0 0; font-size: 0.85rem; color: var(--mat-sys-on-surface-variant); }
+
+@media (max-width: 700px) {
+  .metricas { grid-template-columns: repeat(2, 1fr); }
+}

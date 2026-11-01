@@ -1,0 +1,46 @@
+<h2 mat-dialog-title>{{ esEdicion ? 'Editar evaluación' : 'Nueva evaluación' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="guardar()">
+  <mat-dialog-content class="contenido">
+    <mat-form-field appearance="outline" class="campo-completo">
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="nombre" maxlength="120" placeholder="Ej: Certamen 1" autocomplete="off" />
+      @if (form.controls.nombre.hasError('required')) {
+        <mat-error>El nombre es obligatorio</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="campo-completo">
+      <mat-label>Ponderación (%)</mat-label>
+      <input matInput type="number" formControlName="ponderacion" step="0.01" inputmode="decimal" />
+      <mat-hint>Disponible: {{ disponible }} %</mat-hint>
+      @if (form.controls.ponderacion.hasError('required')) {
+        <mat-error>La ponderación es obligatoria</mat-error>
+      } @else if (form.controls.ponderacion.hasError('min')) {
+        <mat-error>Debe ser mayor que 0</mat-error>
+      } @else if (form.controls.ponderacion.hasError('max')) {
+        <mat-error>Supera el porcentaje disponible ({{ disponible }} %)</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="campo-completo">
+      <mat-label>Nota (opcional)</mat-label>
+      <input matInput type="number" formControlName="nota" step="0.1" inputmode="decimal" />
+      <mat-hint>Entre 1.0 y 7.0. Déjala vacía si aún está pendiente.</mat-hint>
+      @if (form.controls.nota.hasError('notaRango')) {
+        <mat-error>La nota debe estar entre 1.0 y 7.0</mat-error>
+      }
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" mat-dialog-close [disabled]="guardando()">Cancelar</button>
+    <button mat-flat-button type="submit" [disabled]="guardando()">
+      @if (guardando()) {
+        <mat-spinner diameter="20" />
+      } @else {
+        Guardar
+      }
+    </button>
+  </mat-dialog-actions>
+</form>

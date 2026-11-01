@@ -1,0 +1,40 @@
+<h2 mat-dialog-title>{{ esEdicion ? 'Editar asignatura' : 'Nueva asignatura' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="guardar()">
+  <mat-dialog-content class="contenido">
+    <mat-form-field appearance="outline" class="campo-completo">
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="nombre" maxlength="120" autocomplete="off" />
+      @if (form.controls.nombre.hasError('required')) {
+        <mat-error>El nombre es obligatorio</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="campo-completo">
+      <mat-label>Código (opcional)</mat-label>
+      <input matInput formControlName="codigo" maxlength="30" autocomplete="off" />
+      @if (form.controls.codigo.hasError('maxlength')) {
+        <mat-error>Máximo 30 caracteres</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="campo-completo">
+      <mat-label>Semestre</mat-label>
+      <input matInput formControlName="semestre" maxlength="30" placeholder="Ej: 2026-2" autocomplete="off" />
+      @if (form.controls.semestre.hasError('required')) {
+        <mat-error>El semestre es obligatorio</mat-error>
+      }
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" mat-dialog-close [disabled]="guardando()">Cancelar</button>
+    <button mat-flat-button type="submit" [disabled]="guardando()">
+      @if (guardando()) {
+        <mat-spinner diameter="20" />
+      } @else {
+        Guardar
+      }
+    </button>
+  </mat-dialog-actions>
+</form>

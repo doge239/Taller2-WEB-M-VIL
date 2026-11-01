@@ -1,0 +1,39 @@
+.encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+  h1 { margin: 0; font-size: 1.8rem; font-weight: 500; }
+  .subtitulo { margin: 4px 0 0; color: var(--mat-sys-on-surface-variant); }
+}
+
+.centro { display: flex; justify-content: center; padding: 64px 0; }
+.barra-recarga { margin-bottom: 12px; }
+
+.filtros {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.filtro-texto { flex: 1 1 260px; }
+.filtro-semestre { flex: 0 1 200px; }
+
+.grilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.asignatura {
+  padding: 8px 0 0;
+  mat-card-title { font-size: 1.1rem; }
+}
+
+@media (max-width: 600px) {
+  .grilla { grid-template-columns: 1fr; }
+  .filtro-semestre { flex: 1 1 100%; }
+}

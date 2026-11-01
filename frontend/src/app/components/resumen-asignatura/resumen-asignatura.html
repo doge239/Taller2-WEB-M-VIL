@@ -1,0 +1,36 @@
+<div class="mensaje" [class]="'mensaje ' + estado().tipo">
+  <mat-icon>{{ estado().icono }}</mat-icon>
+  <span>{{ estado().texto }}</span>
+</div>
+
+<div class="progreso">
+  <div class="progreso-etiqueta">
+    <span>Porcentaje evaluado</span>
+    <strong>{{ resumen().ponderacion_calificada | number: '1.0-2' }}%</strong>
+  </div>
+  <mat-progress-bar mode="determinate" [value]="progreso()" />
+</div>
+
+<div class="metricas">
+  <div class="metrica">
+    <span class="etiqueta">Promedio parcial</span>
+    <span class="valor">{{ resumen().promedio_parcial !== null ? (resumen().promedio_parcial | number: '1.2-2') : '—' }}</span>
+  </div>
+  <div class="metrica">
+    <span class="etiqueta">Aporte acumulado</span>
+    <span class="valor">{{ resumen().aporte_acumulado | number: '1.2-2' }}</span>
+  </div>
+  <div class="metrica">
+    <span class="etiqueta">Promedio necesario</span>
+    <span class="valor">{{ resumen().promedio_necesario !== null ? (resumen().promedio_necesario | number: '1.2-2') : '—' }}</span>
+  </div>
+  <div class="metrica">
+    <span class="etiqueta">Promedio final</span>
+    <span class="valor">{{ resumen().promedio_final !== null ? (resumen().promedio_final | number: '1.2-2') : '—' }}</span>
+  </div>
+</div>
+
+<p class="detalle">
+  {{ resumen().evaluaciones_calificadas }} de {{ resumen().evaluaciones_totales }}
+  evaluaciones calificadas · {{ resumen().evaluaciones_pendientes }} pendientes
+</p>
