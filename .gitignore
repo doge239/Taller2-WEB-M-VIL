@@ -2,8 +2,7 @@
 .env.*
 !.env.example
 
-**/.venv/
-**/.venv-win/
+**/.venv*/
 **/__pycache__/
 **/.pytest_cache/
 *.pyc

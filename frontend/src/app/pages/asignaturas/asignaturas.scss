@@ -1,39 +1,110 @@
+/* ─── ENCABEZADO ─────────────────────────────────────────────────── */
 .encabezado {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   gap: 16px;
   flex-wrap: wrap;
-  margin-bottom: 24px;
-  h1 { margin: 0; font-size: 1.8rem; font-weight: 500; }
-  .subtitulo { margin: 4px 0 0; color: var(--mat-sys-on-surface-variant); }
+  margin-bottom: 28px;
+
+  h1 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    /* Gradiente en el título */
+    background: linear-gradient(135deg, #e9d5ff 0%, #93c5fd 60%, #67e8f9 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitulo {
+    margin: 6px 0 0;
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 0.95rem;
+  }
 }
 
-.centro { display: flex; justify-content: center; padding: 64px 0; }
-.barra-recarga { margin-bottom: 12px; }
+/* ─── ESTADOS ────────────────────────────────────────────────────── */
+.centro {
+  display: flex;
+  justify-content: center;
+  padding: 72px 0;
+}
 
+.barra-recarga {
+  margin-bottom: 16px;
+  border-radius: 4px;
+}
+
+/* ─── FILTROS ────────────────────────────────────────────────────── */
 .filtros {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+
+  /* Fondo glass en los form-fields */
+  mat-form-field {
+    .mdc-text-field--outlined .mdc-notched-outline__leading,
+    .mdc-text-field--outlined .mdc-notched-outline__notch,
+    .mdc-text-field--outlined .mdc-notched-outline__trailing {
+      border-color: rgba(139, 92, 246, 0.3) !important;
+    }
+  }
 }
-.filtro-texto { flex: 1 1 260px; }
+
+.filtro-texto   { flex: 1 1 260px; }
 .filtro-semestre { flex: 0 1 200px; }
 
+/* ─── GRILLA DE ASIGNATURAS ──────────────────────────────────────── */
 .grilla {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 20px;
 }
 
+/* ─── CARD DE ASIGNATURA ─────────────────────────────────────────── */
 .asignatura {
-  padding: 8px 0 0;
-  mat-card-title { font-size: 1.1rem; }
+  padding: 4px 0 0;
+  cursor: default;
+
+  mat-card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: rgba(255, 255, 255, 0.92);
+  }
+
+  mat-card-subtitle {
+    margin-top: 6px !important;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
 }
 
+/* Separador sutil entre header y acciones */
+mat-card-actions {
+  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+  padding: 8px 8px 8px !important;
+}
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────────── */
 @media (max-width: 600px) {
-  .grilla { grid-template-columns: 1fr; }
+  .encabezado {
+    h1 { font-size: 1.5rem; }
+    /* Botón "Nueva asignatura" ocupa todo el ancho */
+    button { width: 100%; justify-content: center; }
+  }
+
+  .grilla {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
   .filtro-semestre { flex: 1 1 100%; }
 }

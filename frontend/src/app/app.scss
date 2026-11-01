@@ -1,43 +1,84 @@
+/* ─── NAVBAR GLOSSY ──────────────────────────────────────────────── */
 .barra {
   position: sticky;
   top: 0;
-  z-index: 10;
-  background: var(--mat-sys-primary);
-  color: var(--mat-sys-on-primary);
+  z-index: 100;
   gap: 4px;
-  --mat-button-text-label-text-color: var(--mat-sys-on-primary);
-  --mat-button-text-with-icon-label-text-color: var(--mat-sys-on-primary);
-  --mat-button-filled-container-color: var(--mat-sys-on-primary);
-  --mat-button-filled-label-text-color: var(--mat-sys-primary);
+  height: 64px !important;
+
+  /* Gradiente glossy oscuro */
+  background: linear-gradient(
+    135deg,
+    rgba(26, 5, 51, 0.95) 0%,
+    rgba(37, 12, 70, 0.95) 50%,
+    rgba(15, 23, 42, 0.95) 100%
+  ) !important;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(139, 92, 246, 0.2) !important;
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255,255,255,0.05) !important;
+
+  color: rgba(255, 255, 255, 0.92);
+
+  --mat-button-text-label-text-color: rgba(255, 255, 255, 0.85);
+  --mat-button-text-with-icon-label-text-color: rgba(255, 255, 255, 0.85);
+  --mat-button-filled-container-color: rgba(255, 255, 255, 0.92);
+  --mat-button-filled-label-text-color: #1a0533;
+  --mat-icon-color: rgba(255, 255, 255, 0.85);
 }
 
+/* ─── LOGO / MARCA ───────────────────────────────────────────────── */
 .marca {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  color: inherit;
+  gap: 10px;
   text-decoration: none;
-  font-weight: 500;
-  font-size: 1.15rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+  transition: opacity 0.15s ease;
+
+  /* Ícono con color primario */
+  mat-icon {
+    font-size: 26px;
+    width: 26px;
+    height: 26px;
+    color: #c084fc;
+    filter: drop-shadow(0 0 8px rgba(192, 132, 252, 0.5));
+  }
+
+  &:hover { opacity: 0.85; }
+}
+
+/* Texto del logo con gradiente */
+.marca-texto {
+  background: linear-gradient(135deg, #e9d5ff 0%, #93c5fd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .espaciador {
   flex: 1 1 auto;
 }
 
+/* ─── BOTONES DE NAV ─────────────────────────────────────────────── */
 .activo {
-  background: color-mix(in srgb, var(--mat-sys-on-primary) 16%, transparent);
+  background: rgba(139, 92, 246, 0.2) !important;
+  border-radius: 8px;
 }
 
+/* ─── MENÚ DE USUARIO ────────────────────────────────────────────── */
 .menu-cabecera {
   display: flex;
   flex-direction: column;
-  padding: 8px 16px 12px;
-  small {
-    color: var(--mat-sys-on-surface-variant);
-  }
+  padding: 12px 16px 14px;
+
+  strong { color: rgba(255,255,255,0.9); font-size: 0.95rem; }
+  small  { color: rgba(255,255,255,0.5); font-size: 0.8rem; margin-top: 2px; }
 }
 
+/* ─── RESPONSIVE ─────────────────────────────────────────────────── */
 @media (max-width: 700px) {
   .marca-texto,
   .nombre-usuario {

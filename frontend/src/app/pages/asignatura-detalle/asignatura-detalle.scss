@@ -1,17 +1,47 @@
-.volver { margin-left: -8px; margin-bottom: 8px; }
+/* ─── BOTÓN VOLVER ───────────────────────────────────────────────── */
+.volver {
+  margin-left: -8px;
+  margin-bottom: 12px;
+  color: rgba(255,255,255,0.5) !important;
+  font-size: 0.9rem;
 
+  mat-icon { font-size: 18px; width: 18px; height: 18px; }
+  &:hover { color: rgba(255,255,255,0.85) !important; }
+}
+
+/* ─── ENCABEZADO ─────────────────────────────────────────────────── */
 .encabezado {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 16px;
   flex-wrap: wrap;
-  margin-bottom: 20px;
-  h1 { margin: 0; font-size: 1.8rem; font-weight: 500; }
-  .subtitulo { margin: 4px 0 0; color: var(--mat-sys-on-surface-variant); }
+  margin-bottom: 24px;
+
+  h1 {
+    margin: 0;
+    font-size: 1.9rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    background: linear-gradient(135deg, #e9d5ff 0%, #93c5fd 70%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitulo {
+    margin: 6px 0 0;
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 0.9rem;
+  }
 }
 
-.seccion { margin-bottom: 20px; padding-bottom: 8px; }
+/* ─── SECCIONES ──────────────────────────────────────────────────── */
+.seccion {
+  margin-bottom: 20px;
+  padding-bottom: 8px;
+  border-radius: 16px !important;
+}
 
 .cabecera-resumen {
   display: flex;
@@ -19,19 +49,96 @@
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-  padding: 16px 16px 12px;
+  padding: 16px 20px 12px;
+
   ::ng-deep .mat-mdc-card-header-text { flex: 1; }
+
+  mat-card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.8rem;
+  }
 }
+
 .campo-meta { width: 140px; }
 
-.centro { display: flex; justify-content: center; padding: 64px 0; }
-.centro-pequeno { display: flex; justify-content: center; padding: 24px 0; }
-.error-texto { color: var(--mat-sys-error); }
+/* ─── ESTADOS ────────────────────────────────────────────────────── */
+.centro        { display: flex; justify-content: center; padding: 72px 0; }
+.centro-pequeno { display: flex; justify-content: center; padding: 28px 0; }
+.error-texto   { color: #f87171; font-size: 0.9rem; }
 
-.tabla-contenedor { overflow-x: auto; }
-table { width: 100%; background: transparent; }
-.col-acciones { text-align: right; white-space: nowrap; width: 1%; }
+/* ─── TABLA DE EVALUACIONES ──────────────────────────────────────── */
+.tabla-contenedor {
+  overflow-x: auto;
+  border-radius: 12px;
+  margin: 0 -4px;
 
-.nota { font-weight: 500; &.reprobada { color: var(--mat-sys-error); } }
-.pendiente { color: var(--mat-sys-on-surface-variant); font-style: italic; }
-.total { margin: 12px 0 0; font-size: 0.85rem; color: var(--mat-sys-on-surface-variant); }
+  /* Scrollbar horizontal fino */
+  &::-webkit-scrollbar { height: 4px; }
+  &::-webkit-scrollbar-thumb { background: rgba(139, 92, 246, 0.4); border-radius: 2px; }
+}
+
+table {
+  width: 100%;
+  background: transparent !important;
+  min-width: 480px; /* fuerza scroll horizontal en pantallas pequeñas */
+}
+
+/* Filas con hover suave */
+tr.mat-mdc-row:hover {
+  background: rgba(139, 92, 246, 0.07) !important;
+  transition: background 0.15s ease;
+}
+
+.col-acciones {
+  text-align: right;
+  white-space: nowrap;
+  width: 1%;
+}
+
+/* ─── NOTAS ──────────────────────────────────────────────────────── */
+.nota {
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: #4ade80; /* verde aprobada por defecto */
+
+  &.reprobada { color: #f87171; }
+}
+
+.pendiente {
+  color: rgba(255, 255, 255, 0.35);
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.total {
+  margin: 14px 0 0;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 0 4px;
+}
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────────── */
+@media (max-width: 700px) {
+  .encabezado {
+    h1 { font-size: 1.4rem; }
+
+    .acciones-fila {
+      width: 100%;
+      button { flex: 1; justify-content: center; }
+    }
+  }
+
+  .cabecera-resumen {
+    flex-direction: column;
+    align-items: flex-start;
+    .campo-meta { width: 100%; }
+  }
+}
+
+@media (max-width: 480px) {
+  .encabezado h1 { font-size: 1.25rem; }
+}
