@@ -1,52 +1,146 @@
-/* ─── CARD DE LOGIN ──────────────────────────────────────────────── */
+.login-layout {
+  width: min(100%, 980px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 440px);
+  align-items: stretch;
+  gap: 48px;
+}
+
+.intro-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 520px;
+  padding: 18px 0;
+  color: #f3f6fa;
+}
+
+.intro-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #f5c451;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+
+  mat-icon {
+    color: #f5c451;
+  }
+}
+
+.intro-copy {
+  max-width: 470px;
+
+  .eyebrow {
+    margin: 0 0 16px;
+    color: #f5c451;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    max-width: 440px;
+    margin: 0;
+    color: #f3f6fa;
+    font-size: clamp(2.4rem, 5vw, 4.2rem);
+    font-weight: 700;
+    letter-spacing: -0.055em;
+    line-height: 0.98;
+  }
+
+  p:last-child {
+    max-width: 390px;
+    margin: 24px 0 0;
+    color: #aab7c8;
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+}
+
+.semester-card {
+  width: min(100%, 420px);
+  padding: 20px;
+  box-sizing: border-box;
+  border: 1px solid rgba(245, 196, 81, 0.28);
+  border-radius: 14px;
+  background: rgba(24, 37, 56, 0.88);
+  box-shadow: 0 16px 36px rgba(4, 10, 20, 0.24);
+}
+
+.semester-label {
+  display: block;
+  margin-bottom: 18px;
+  color: #aab7c8;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.semester-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  strong {
+    color: #f3f6fa;
+    font-size: 1.45rem;
+    letter-spacing: -0.04em;
+  }
+
+  span {
+    color: #aab7c8;
+    font-size: 0.72rem;
+    line-height: 1.2;
+  }
+}
+
 .tarjeta {
   width: 100%;
   max-width: 440px;
-  padding: 12px;
-
-  /* Glassmorphism premium */
-  background: rgba(255, 255, 255, 0.04) !important;
-  backdrop-filter: blur(24px) saturate(160%);
-  -webkit-backdrop-filter: blur(24px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  padding: 16px;
+  align-self: center;
+  background: #182538 !important;
+  border: 1px solid rgba(170, 183, 200, 0.16) !important;
   box-shadow:
-    0 8px 40px rgba(0, 0, 0, 0.5),
-    0 2px 0 rgba(255, 255, 255, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
-  border-radius: 20px !important;
+    0 18px 48px rgba(4, 10, 20, 0.35),
+    0 1px 0 rgba(255, 255, 255, 0.04) !important;
+  border-radius: 14px !important;
   animation: fadeUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
 
-  /* Encabezado */
   mat-card-title {
-    font-size: 1.6rem !important;
+    color: #f3f6fa !important;
+    font-size: 1.65rem !important;
     font-weight: 700 !important;
     letter-spacing: -0.03em;
-    background: linear-gradient(135deg, #e9d5ff, #93c5fd);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
   }
 
   mat-card-subtitle {
-    color: rgba(255, 255, 255, 0.5) !important;
+    color: #aab7c8 !important;
     margin-top: 4px !important;
   }
 }
 
-/* ─── CONTENIDO DEL FORMULARIO ───────────────────────────────────── */
 .contenido {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding-top: 24px !important;
+  gap: 6px;
+  padding-top: 28px !important;
 }
 
-/* ─── ACCIONES ───────────────────────────────────────────────────── */
 .acciones {
   flex-direction: column;
   align-items: stretch !important;
-  gap: 14px;
-  padding: 8px 16px 20px !important;
+  gap: 16px;
+  padding: 10px 16px 18px !important;
 }
 
 .boton-principal {
@@ -54,33 +148,71 @@
   font-size: 1rem !important;
   font-weight: 600 !important;
   letter-spacing: 0.01em;
-  border-radius: 12px !important;
-  background: linear-gradient(135deg, #7c3aed, #2563eb) !important;
-  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4) !important;
-  transition: box-shadow 0.2s ease, transform 0.1s ease !important;
+  border-radius: 9px !important;
+  background: #4f8ef7 !important;
+  color: #07111f !important;
+  box-shadow: 0 8px 18px rgba(79, 142, 247, 0.24) !important;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease !important;
 
   &:not(:disabled):hover {
-    box-shadow: 0 6px 28px rgba(124, 58, 237, 0.6) !important;
+    background: #6ca3ff !important;
+    box-shadow: 0 10px 24px rgba(79, 142, 247, 0.34) !important;
     transform: translateY(-1px);
   }
 
   &:not(:disabled):active {
     transform: translateY(0);
   }
+
+  &:focus-visible {
+    outline: 3px solid #f5c451;
+    outline-offset: 3px;
+  }
 }
 
-/* ─── ENLACE ALTERNATIVO ─────────────────────────────────────────── */
 .alterno {
   text-align: center;
   font-size: 0.88rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: #aab7c8;
 
   a {
-    color: #c084fc;
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.15s;
+    color: #f5c451;
+    font-weight: 600;
+    text-underline-offset: 3px;
+    transition: color 0.15s ease;
 
-    &:hover { color: #e9d5ff; }
+    &:hover,
+    &:focus-visible {
+      color: #ffe08a;
+    }
+
+    &:focus-visible {
+      outline: 2px solid #f5c451;
+      outline-offset: 4px;
+    }
+  }
+}
+
+@media (max-width: 760px) {
+  .login-layout {
+    display: block;
+    width: min(100%, 440px);
+  }
+
+  .intro-panel {
+    min-height: auto;
+    padding: 8px 0 28px;
+  }
+
+  .intro-copy {
+    margin-top: 42px;
+
+    h1 {
+      font-size: clamp(2.3rem, 12vw, 3.2rem);
+    }
+  }
+
+  .semester-card {
+    display: none;
   }
 }

@@ -32,11 +32,11 @@ body {
   margin: 0;
   font-family: 'Inter', 'Helvetica Neue', sans-serif;
 
-  /* Fondo oscuro con degradado profundo */
+  /* Fondo inspirado en una pizarra nocturna */
   background:
-    radial-gradient(ellipse at 20% 50%, rgba(94, 39, 180, 0.15) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 10%, rgba(0, 150, 199, 0.10) 0%, transparent 50%),
-    linear-gradient(160deg, #0d0b1e 0%, #130f2b 40%, #0a1628 100%);
+    radial-gradient(ellipse at 18% 44%, rgba(79, 142, 247, 0.12) 0%, transparent 55%),
+    radial-gradient(ellipse at 84% 8%, rgba(245, 196, 81, 0.08) 0%, transparent 42%),
+    linear-gradient(150deg, #0d1624 0%, #101b2b 52%, #0a1421 100%);
   background-attachment: fixed;
   color: var(--mat-sys-on-surface);
   min-height: 100vh;
@@ -151,10 +151,10 @@ mat-card[appearance="outlined"],
   padding: 16px;
   box-sizing: border-box;
 
-  /* Fondo animado para login/registro */
+  /* Fondo local para las pantallas de acceso */
   background:
-    radial-gradient(ellipse at 30% 60%, rgba(94, 39, 180, 0.25) 0%, transparent 55%),
-    radial-gradient(ellipse at 75% 20%, rgba(0, 180, 219, 0.15) 0%, transparent 50%);
+    radial-gradient(ellipse at 18% 58%, rgba(79, 142, 247, 0.13) 0%, transparent 55%),
+    radial-gradient(ellipse at 84% 18%, rgba(245, 196, 81, 0.07) 0%, transparent 46%);
 }
 
 .campo-completo {

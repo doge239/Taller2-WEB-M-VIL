@@ -55,6 +55,32 @@ Taller2-WEB-M-VIL/
 └── .env.example      # Variables de entorno (plantilla)
 ```
 
+## Skills de agentes de IA
+
+Este proyecto integra Skills de la colección pública de
+[Anthropic Skills](https://github.com/anthropics/skills), bajo `.github/skills/`.
+Se seleccionaron dos Skills relacionadas directamente con este proyecto:
+
+- `webapp-testing`: prueba aplicaciones web locales con Playwright, permite
+  verificar flujos del frontend, capturar screenshots y revisar logs del
+  navegador. Incluye `scripts/with_server.py` para gestionar servidores.
+- `frontend-design`: guía la definición y mejora de una interfaz visual
+  intencional, incluyendo paleta, tipografía, composición y estados de la UI.
+
+Las Skills siguen el formato `SKILL.md` y son compatibles con agentes que
+implementan el estándar Agent Skills. Para experimentar con ellas, solicita al
+agente una prueba del flujo de registro/login usando `webapp-testing`, o una
+propuesta de mejora visual de la aplicación usando `frontend-design`.
+
+Para ejecutar `webapp-testing`, instala sus dependencias en el entorno del
+backend:
+
+```powershell
+cd backend
+python -m pip install -r requirements-test.txt
+python -m playwright install chromium
+```
+
 ---
 
 ## Configuración inicial
