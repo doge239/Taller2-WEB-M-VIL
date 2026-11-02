@@ -86,6 +86,9 @@ SEED_TEST_USERS=true
 
 Con `SEED_TEST_USERS=true`, el backend crea automáticamente las cuentas de
 prueba al iniciar por primera vez y no las duplica en arranques posteriores.
+También crea cuatro asignaturas con tres evaluaciones calificadas para cada
+cuenta. Las asignaturas y evaluaciones faltantes se agregan sin duplicar datos
+si la base ya contenía alguna cuenta.
 Desactívalo en entornos que no sean de desarrollo.
 
 ### Cuentas de prueba
