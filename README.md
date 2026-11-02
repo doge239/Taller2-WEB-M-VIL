@@ -91,6 +91,39 @@ cuenta. Las asignaturas y evaluaciones faltantes se agregan sin duplicar datos
 si la base ya contenía alguna cuenta.
 Desactívalo en entornos que no sean de desarrollo.
 
+### Para que otro integrante vea los datos de prueba
+
+Las cuentas, asignaturas y notas de prueba se generan desde el código al
+iniciar el backend. No es necesario copiar tu carpeta de PostgreSQL ni subir
+datos al repositorio. Después de clonar o actualizar el proyecto, tu
+compañero debe ejecutar:
+
+```powershell
+copy .env.example .env
+# Editar .env y establecer una contraseña local de PostgreSQL
+# Mantener SEED_TEST_USERS=true
+docker compose up -d
+cd backend
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python -m uvicorn app.main:app --reload --port 8000
+```
+
+Al arrancar FastAPI, se crean las 10 cuentas, sus cuatro asignaturas y sus
+doce evaluaciones. Luego puede iniciar Angular en otra terminal:
+
+```powershell
+cd frontend
+npm install
+npm start
+```
+
+Esto genera los mismos datos de prueba en la base local de cada integrante.
+Si ambos necesitan ver cambios reales compartidos en tiempo real, deben
+configurar `POSTGRES_HOST`, `POSTGRES_PORT` y las credenciales para apuntar a
+una única base PostgreSQL accesible por ambos; un `git push` por sí solo no
+comparte datos de la base.
+
 ### Cuentas de prueba
 
 Estas cuentas se crean automáticamente para probar el login y los flujos
