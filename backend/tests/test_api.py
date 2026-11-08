@@ -1,5 +1,7 @@
+import secrets
 import unittest
 from datetime import datetime, timedelta, timezone
+
 import jwt
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -14,6 +16,7 @@ from app.security import ISSUER, hash_password, jwt_settings
 
 class APIIntegrationTests(unittest.TestCase):
     def setUp(self):
+        self.test_password = secrets.token_urlsafe(24)
         self.engine = create_engine(
             "sqlite://",
             connect_args={"check_same_thread": False},
@@ -44,14 +47,14 @@ class APIIntegrationTests(unittest.TestCase):
             json={
                 "nombre": name,
                 "correo": email,
-                "password": "Password123!",
+                "password": self.test_password,
             },
         )
 
     def login(self, email="ana@example.com"):
         return self.client.post(
             "/api/auth/login",
-            json={"correo": email, "password": "Password123!"},
+            json={"correo": email, "password": self.test_password},
         )
 
     def create_subject(self, headers, name="Matemática"):
@@ -454,7 +457,7 @@ class APIIntegrationTests(unittest.TestCase):
                 correo="ana@example.com"
             ).one()
             stored_hash = first_user.password_hash
-        self.assertNotEqual(stored_hash, "Password123!")
+        self.assertNotEqual(stored_hash, self.test_password)
         self.assertTrue(stored_hash.startswith("$argon2id$"))
 
 

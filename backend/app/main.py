@@ -8,9 +8,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from . import models
-from .database import Base, SessionLocal, engine, get_db
+from .database import Base, engine, get_db
 from .routers import asignaturas_router, auth_router, evaluaciones_router
-from .seed import seed_test_users
 from .security import jwt_settings
 
 
@@ -25,8 +24,6 @@ async def lifespan(app: FastAPI):
     jwt_settings()
     # Los modelos deben estar importados antes de crear las tablas.
     Base.metadata.create_all(bind=engine)
-    with SessionLocal() as session:
-        seed_test_users(session)
 
     try:
         yield

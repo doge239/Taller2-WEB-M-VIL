@@ -9,9 +9,9 @@ Aplicación web para gestionar asignaturas y evaluaciones académicas con cálcu
 | Capa | Tecnología |
 |---|---|
 | Frontend | Angular 21 + Angular Material 21 |
-| Backend | Python 3.12 + FastAPI 0.115 |
+| Backend | Python 3.12+ + FastAPI (`>=0.115,<1`) |
 | Base de datos | PostgreSQL 17 (Docker) |
-| Autenticación | JWT (HS256) + bcrypt/argon2 |
+| Autenticación | JWT (HS256) + Argon2id |
 | ORM | SQLAlchemy 2 |
 
 ---
@@ -21,9 +21,9 @@ Aplicación web para gestionar asignaturas y evaluaciones académicas con cálcu
 | Herramienta | Versión mínima | Verificar |
 |---|---|---|
 | Python | 3.12 | `python --version` |
-| Node.js | 20 LTS | `node --version` |
+| Node.js | 20.19+, 22.12+ o 24+ | `node --version` |
 | npm | 10 | `npm --version` |
-| Docker + Docker Compose | 24 / v2 | `docker --version` |
+| Docker + Docker Compose | 24+ / v2 | `docker --version`, `docker compose version` |
 
 ---
 
@@ -61,10 +61,14 @@ Taller2-WEB-M-VIL/
 
 ### 1. Copiar las variables de entorno
 
+```powershell
+# Windows PowerShell, desde la raíz del proyecto
+Copy-Item .env.example .env
+```
+
 ```bash
-# En la raíz del proyecto
-copy .env.example .env      # Windows
-# cp .env.example .env      # macOS / Linux
+# macOS / Linux, desde la raíz del proyecto
+cp .env.example .env
 ```
 
 Edita `.env` y completa los valores:
@@ -78,71 +82,14 @@ POSTGRES_HOST=127.0.0.1
 JWT_SECRET=reemplaza_esto_por_un_secreto_de_al_menos_32_caracteres
 JWT_ACCESS_TOKEN_EXPIRE_MINUTES=30
 ALLOWED_ORIGINS=http://localhost:4200
-SEED_TEST_USERS=true
 ```
 
 > **Importante**: `JWT_SECRET` debe tener al menos 32 caracteres aleatorios.  
 > Puedes generar uno con: `python -c "import secrets; print(secrets.token_hex(32))"`
 
-Con `SEED_TEST_USERS=true`, el backend crea automáticamente las cuentas de
-prueba al iniciar por primera vez y no las duplica en arranques posteriores.
-También crea cuatro asignaturas con tres evaluaciones calificadas para cada
-cuenta. Las asignaturas y evaluaciones faltantes se agregan sin duplicar datos
-si la base ya contenía alguna cuenta.
-Desactívalo en entornos que no sean de desarrollo.
-
-### Para que otro integrante vea los datos de prueba
-
-Las cuentas, asignaturas y notas de prueba se generan desde el código al
-iniciar el backend. No es necesario copiar tu carpeta de PostgreSQL ni subir
-datos al repositorio. Después de clonar o actualizar el proyecto, tu
-compañero debe ejecutar:
-
-```powershell
-copy .env.example .env
-# Editar .env y establecer una contraseña local de PostgreSQL
-# Mantener SEED_TEST_USERS=true
-docker compose up -d
-cd backend
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-python -m uvicorn app.main:app --reload --port 8000
-```
-
-Al arrancar FastAPI, se crean las 10 cuentas, sus cuatro asignaturas y sus
-doce evaluaciones. Luego puede iniciar Angular en otra terminal:
-
-```powershell
-cd frontend
-npm install
-npm start
-```
-
-Esto genera los mismos datos de prueba en la base local de cada integrante.
-Si ambos necesitan ver cambios reales compartidos en tiempo real, deben
-configurar `POSTGRES_HOST`, `POSTGRES_PORT` y las credenciales para apuntar a
-una única base PostgreSQL accesible por ambos; un `git push` por sí solo no
-comparte datos de la base.
-
-### Cuentas de prueba
-
-Estas cuentas se crean automáticamente para probar el login y los flujos
-aislados por usuario:
-
-| # | Nombre | Correo | Contraseña |
-|---:|---|---|---|
-| 1 | Ana Torres | `ana.prueba@example.com` | `Notas2026!01` |
-| 2 | Bruno Soto | `bruno.prueba@example.com` | `Notas2026!02` |
-| 3 | Camila Rojas | `camila.prueba@example.com` | `Notas2026!03` |
-| 4 | Diego Pérez | `diego.prueba@example.com` | `Notas2026!04` |
-| 5 | Elena Muñoz | `elena.prueba@example.com` | `Notas2026!05` |
-| 6 | Felipe Castro | `felipe.prueba@example.com` | `Notas2026!06` |
-| 7 | Gabriela Silva | `gabriela.prueba@example.com` | `Notas2026!07` |
-| 8 | Hugo Vargas | `hugo.prueba@example.com` | `Notas2026!08` |
-| 9 | Isidora Pérez | `isidora.prueba@example.com` | `Notas2026!09` |
-| 10 | Javier Morales | `javier.prueba@example.com` | `Notas2026!10` |
-
----
+El backend crea las tablas al iniciar, pero no inserta usuarios ni contraseñas
+de prueba. Cada integrante puede crear su propia cuenta desde `/registro`.
+Los datos de cada usuario se guardan en su base PostgreSQL local.
 
 ## Levantar la base de datos (Docker)
 
@@ -174,8 +121,8 @@ cd backend
 # Crear entorno virtual (recomendado)
 python -m venv .venv
 
-# Activar en Windows
-.venv\Scripts\activate
+# Activar en Windows PowerShell
+.\.venv\Scripts\Activate.ps1
 # Activar en macOS / Linux
 # source .venv/bin/activate
 
@@ -194,7 +141,7 @@ El backend queda disponible en:
 - Documentación interactiva: http://127.0.0.1:8000/docs
 - Health check: http://127.0.0.1:8000/api/health
 
-> Las tablas se crean automáticamente en el primer arranque (SQLAlchemy `create_all`).
+> Las tablas se crean automáticamente al iniciar la API (SQLAlchemy `create_all`).
 
 ---
 
@@ -242,6 +189,9 @@ python -m pytest tests/ -v
 | `test_evaluations_support_complete_crud_and_pending_grade` | CRUD completo de evaluaciones con nota pendiente (NULL) |
 | `test_final_average_is_5_6_for_5_at_40_and_6_at_60` | Promedio ponderado: 5×40% + 6×60% = 5.6 |
 | `test_partial_average_and_required_grade_for_remaining_weight` | Nota necesaria y aporte acumulado parciales |
+| `test_pending_evaluations_and_unregistered_weight_are_remaining` | Pendientes y porcentaje sin asignar cuentan como peso restante |
+| `test_out_of_range_grades_are_rejected` | Rechaza notas fuera del rango de 1.0 a 7.0 |
+| `test_weight_total_over_100_is_rejected_on_create_and_update` | Rechaza ponderaciones acumuladas mayores a 100 % |
 | `test_second_user_cannot_read_update_or_delete_first_users_data` | Aislamiento total entre usuarios (404 en datos ajenos) |
 
 ---
@@ -276,14 +226,15 @@ python -m pytest tests/ -v
 | `GET` | `/api/auth/me` | Usuario autenticado actual |
 | `GET` | `/api/asignaturas` | Listar mis asignaturas |
 | `POST` | `/api/asignaturas` | Crear asignatura |
-| `GET` | `/api/asignaturas/{id}` | Obtener asignatura |
-| `PUT` | `/api/asignaturas/{id}` | Editar asignatura |
-| `DELETE` | `/api/asignaturas/{id}` | Eliminar asignatura |
-| `GET` | `/api/asignaturas/{id}/evaluaciones` | Listar evaluaciones |
-| `POST` | `/api/asignaturas/{id}/evaluaciones` | Crear evaluación |
-| `PUT` | `/api/asignaturas/{id}/evaluaciones/{eid}` | Editar evaluación |
-| `DELETE` | `/api/asignaturas/{id}/evaluaciones/{eid}` | Eliminar evaluación |
-| `GET` | `/api/asignaturas/{id}/resumen` | Resumen de notas calculado |
+| `GET` | `/api/asignaturas/{asignatura_id}` | Obtener asignatura |
+| `PUT` | `/api/asignaturas/{asignatura_id}` | Editar asignatura |
+| `DELETE` | `/api/asignaturas/{asignatura_id}` | Eliminar asignatura |
+| `GET` | `/api/asignaturas/{asignatura_id}/evaluaciones` | Listar evaluaciones |
+| `POST` | `/api/asignaturas/{asignatura_id}/evaluaciones` | Crear evaluación |
+| `GET` | `/api/asignaturas/{asignatura_id}/evaluaciones/{evaluacion_id}` | Obtener evaluación |
+| `PUT` | `/api/asignaturas/{asignatura_id}/evaluaciones/{evaluacion_id}` | Editar evaluación |
+| `DELETE` | `/api/asignaturas/{asignatura_id}/evaluaciones/{evaluacion_id}` | Eliminar evaluación |
+| `GET` | `/api/asignaturas/{asignatura_id}/resumen` | Resumen de notas calculado |
 | `GET` | `/api/health` | Estado de la base de datos |
 
 Documentación completa e interactiva en **http://127.0.0.1:8000/docs**
@@ -299,6 +250,6 @@ Documentación completa e interactiva en **http://127.0.0.1:8000/docs**
 | `POSTGRES_DB` | Nombre de la base de datos | `gestor_notas` |
 | `POSTGRES_PORT` | Puerto expuesto en el host | `55433` |
 | `POSTGRES_HOST` | Host de PostgreSQL | `127.0.0.1` |
-| `JWT_SECRET` | Secreto para firmar JWT (≥ 32 chars) | `abc123...` |
+| `JWT_SECRET` | Secreto aleatorio local para firmar JWT (≥ 32 chars) | Generar con `secrets.token_hex(32)` |
 | `JWT_ACCESS_TOKEN_EXPIRE_MINUTES` | Duración del token en minutos | `30` |
 | `ALLOWED_ORIGINS` | Orígenes CORS permitidos (CSV) | `http://localhost:4200` |
