@@ -25,7 +25,7 @@ database_url = URL.create(
     username=required_env("POSTGRES_USER"),
     password=required_env("POSTGRES_PASSWORD"),
     host=os.getenv("POSTGRES_HOST", "127.0.0.1"),
-    port=int(os.getenv("POSTGRES_PORT", "55433")),
+    port=int(os.getenv("POSTGRES_PORT", "5433")),
     database=required_env("POSTGRES_DB"),
 )
 
