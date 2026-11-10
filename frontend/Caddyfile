@@ -1,0 +1,13 @@
+:{$PORT:8080} {
+    handle /api/* {
+        reverse_proxy https://taller2-web-m-vil-production.up.railway.app {
+            header_up Host {upstream_hostport}
+        }
+    }
+
+    handle {
+        root * /srv
+        try_files {path} /index.html
+        file_server
+    }
+}
