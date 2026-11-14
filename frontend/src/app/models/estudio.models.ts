@@ -11,8 +11,12 @@ export interface SesionPayload {
   precision_metros: number | null;
   objetivo: string;
 }
-export interface SesionEstudio extends SesionPayload { id: number; asignatura_id: number; }
+export interface SesionEstudio extends SesionPayload {
+  id: number;
+  asignatura_id: number;
+}
 export interface EstudioActivo {
+  metaMinutos: number;
   asignaturaId: number;
   nombre: string;
   objetivo: string;

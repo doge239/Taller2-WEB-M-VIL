@@ -1,144 +1,203 @@
-/* ─── BOTÓN VOLVER ───────────────────────────────────────────────── */
 .volver {
-  margin-left: -8px;
-  margin-bottom: 12px;
-  color: rgba(255,255,255,0.5) !important;
-  font-size: 0.9rem;
-
-  mat-icon { font-size: 18px; width: 18px; height: 18px; }
-  &:hover { color: rgba(255,255,255,0.85) !important; }
+  margin: -10px 0 20px -12px;
+  color: var(--app-muted);
+  font-size: 13px;
 }
-
-/* ─── ENCABEZADO ─────────────────────────────────────────────────── */
 .encabezado {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
+  align-items: center;
+  gap: 22px;
   flex-wrap: wrap;
-  margin-bottom: 24px;
-
-  h1 {
-    margin: 0;
-    font-size: 1.9rem;
-    font-weight: 700;
-    letter-spacing: -0.04em;
-    background: linear-gradient(135deg, #e9d5ff 0%, #93c5fd 70%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .subtitulo {
-    margin: 6px 0 0;
-    color: rgba(255, 255, 255, 0.45);
-    font-size: 0.9rem;
-  }
+  margin-bottom: 32px;
 }
-
-/* ─── SECCIONES ──────────────────────────────────────────────────── */
+h1 {
+  margin: 0;
+  font-size: clamp(28px, 4vw, 38px);
+  font-weight: 650;
+  color: var(--app-text);
+  letter-spacing: -0.05em;
+  line-height: 1.2;
+}
+.subtitulo {
+  margin: 10px 0 0;
+  color: var(--app-muted);
+  font-size: 14px;
+}
 .seccion {
-  margin-bottom: 20px;
-  padding-bottom: 8px;
-  border-radius: 16px !important;
+  margin-bottom: 24px;
+  padding-bottom: 22px;
+  overflow: hidden;
 }
-
 .cabecera-resumen {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
   flex-wrap: wrap;
-  padding: 16px 20px 12px;
-
-  ::ng-deep .mat-mdc-card-header-text { flex: 1; }
-
-  mat-card-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-size: 0.8rem;
-  }
+  padding: 24px;
+  margin-bottom: 8px;
 }
-
-.campo-meta { width: 140px; }
-
-/* ─── ESTADOS ────────────────────────────────────────────────────── */
-.centro        { display: flex; justify-content: center; padding: 72px 0; }
-.centro-pequeno { display: flex; justify-content: center; padding: 28px 0; }
-.error-texto   { color: #f87171; font-size: 0.9rem; }
-
-/* ─── TABLA DE EVALUACIONES ──────────────────────────────────────── */
+.cabecera-resumen ::ng-deep .mat-mdc-card-header-text {
+  flex: 1;
+}
+.cabecera-resumen mat-card-title {
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  color: var(--app-text);
+}
+.seccion mat-card-content {
+  padding: 0 24px;
+}
+.campo-meta {
+  width: 150px;
+}
+.centro {
+  display: flex;
+  justify-content: center;
+  padding: 72px 0;
+}
+.centro-pequeno {
+  display: flex;
+  justify-content: center;
+  padding: 28px 0;
+}
+.error-texto {
+  color: var(--app-red);
+  font-size: 14px;
+}
 .tabla-contenedor {
   overflow-x: auto;
   border-radius: 12px;
-  margin: 0 -4px;
-
-  /* Scrollbar horizontal fino */
-  &::-webkit-scrollbar { height: 4px; }
-  &::-webkit-scrollbar-thumb { background: rgba(139, 92, 246, 0.4); border-radius: 2px; }
 }
-
 table {
   width: 100%;
-  background: transparent !important;
-  min-width: 480px; /* fuerza scroll horizontal en pantallas pequeñas */
+  background: transparent;
+  min-width: 460px;
 }
-
-/* Filas con hover suave */
 tr.mat-mdc-row:hover {
-  background: rgba(139, 92, 246, 0.07) !important;
-  transition: background 0.15s ease;
+  background: #eaf0f84d;
 }
-
 .col-acciones {
   text-align: right;
   white-space: nowrap;
   width: 1%;
 }
-
-/* ─── NOTAS ──────────────────────────────────────────────────────── */
 .nota {
+  display: inline-block;
+  min-width: 42px;
+  text-align: center;
   font-weight: 600;
-  font-size: 1.05rem;
-  color: #4ade80; /* verde aprobada por defecto */
-
-  &.reprobada { color: #f87171; }
+  font-variant-numeric: tabular-nums;
+  color: var(--app-green);
+  background: #eaf4ee;
+  padding: 5px 8px;
+  border-radius: 8px;
 }
-
+.nota.reprobada {
+  color: var(--app-red);
+  background: #faedef;
+}
 .pendiente {
-  color: rgba(255, 255, 255, 0.35);
-  font-style: italic;
-  font-size: 0.9rem;
+  color: var(--app-muted);
+  font-size: 13px;
 }
-
 .total {
-  margin: 14px 0 0;
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.4);
-  padding: 0 4px;
+  margin: 18px 0 0;
+  font-size: 12px;
+  color: var(--app-muted);
 }
-
-/* ─── RESPONSIVE ─────────────────────────────────────────────────── */
 @media (max-width: 700px) {
-  .encabezado {
-    h1 { font-size: 1.4rem; }
-
-    .acciones-fila {
-      width: 100%;
-      button { flex: 1; justify-content: center; }
-    }
+  .encabezado .acciones-fila {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
   }
-
+  .encabezado button {
+    justify-content: center;
+  }
   .cabecera-resumen {
-    flex-direction: column;
+    padding: 20px;
+    gap: 20px;
+  }
+  .seccion mat-card-content {
+    padding: 0 20px;
+  }
+  .cabecera-resumen .campo-meta {
+    width: 138px;
+  }
+}
+@media (max-width: 380px) {
+  .cabecera-resumen {
     align-items: flex-start;
-    .campo-meta { width: 100%; }
+  }
+  .campo-meta {
+    width: 100% !important;
   }
 }
 
-@media (max-width: 480px) {
-  .encabezado h1 { font-size: 1.25rem; }
+.selector-vista {
+  display: flex;
+  gap: 4px;
+  width: fit-content;
+  padding: 4px;
+  background: #e8edef;
+  border: 1px solid #dde3e7;
+  border-radius: 13px;
+  margin: 0 0 26px;
+  scroll-margin-top: 94px;
+}
+.selector-vista button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  border-radius: 9px;
+  min-height: 42px;
+  padding: 9px 20px;
+  background: none;
+  color: var(--app-muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.18s,
+    color 0.18s,
+    box-shadow 0.18s;
+}
+.selector-vista .elegida {
+  background: #fff;
+  color: #285675;
+  box-shadow: 0 2px 6px #263b4b12;
+}
+.selector-vista mat-icon {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}
+.seccion-notas:not([hidden]),
+.seccion-estudio:not([hidden]) {
+  animation: seccionEntrar 0.24s ease both;
+}
+@keyframes seccionEntrar {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (max-width: 600px) {
+  .selector-vista {
+    width: 100%;
+  }
+  .selector-vista button {
+    flex: 1;
+    padding: 9px 12px;
+    font-size: 12px;
+  }
 }

@@ -12,6 +12,7 @@ from .database import Base, engine, get_db
 from .routers import asignaturas_router, auth_router, evaluaciones_router
 from .security import jwt_settings
 from .routers.sesiones import router as sesiones_router
+from .routers.panel import router as panel_router
 
 
 def _allowed_origins() -> list[str]:
@@ -53,6 +54,7 @@ app.include_router(auth_router)
 app.include_router(asignaturas_router)
 app.include_router(evaluaciones_router)
 app.include_router(sesiones_router)
+app.include_router(panel_router)
 
 
 @app.get("/")

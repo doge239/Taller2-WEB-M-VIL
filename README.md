@@ -7,6 +7,11 @@ Consulta [TALLER3.md](TALLER3.md) para la arquitectura, relación con la pauta
 y guion de presentación, y [ANDROID.md](ANDROID.md) para construir e instalar.
 Las nuevas rutas requieren iniciar o desplegar el backend actualizado.
 
+La versión Android 1.1 incorpora un panel con promedios y notas pendientes,
+actividad de estudio acumulada, navegación inferior y bloques de 15, 25 o 45
+minutos. Incluye un inicio nativo animado y una preferencia para reducir el
+movimiento desde Cuenta. El panel consume `GET /api/panel` de este backend.
+
 Aplicación web para gestionar asignaturas y evaluaciones académicas con cálculo automático de promedios, nota necesaria y estado de la meta. Construida con **Angular 21**, **FastAPI** y **PostgreSQL**.
 
 ---

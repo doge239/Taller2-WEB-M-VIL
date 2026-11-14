@@ -67,9 +67,14 @@ export class AsignaturaDetalle {
 
   /** Meta de nota (Signal): al cambiar, el resumen se vuelve a pedir solo. */
   protected readonly meta = signal(4.0);
+  protected readonly vista = signal<'notas' | 'estudio'>('notas');
 
-  protected readonly asignatura = this.asignaturasService.detalleResource(() => this.asignaturaId());
-  protected readonly evaluaciones = this.evaluacionesService.listarResource(() => this.asignaturaId());
+  protected readonly asignatura = this.asignaturasService.detalleResource(() =>
+    this.asignaturaId(),
+  );
+  protected readonly evaluaciones = this.evaluacionesService.listarResource(() =>
+    this.asignaturaId(),
+  );
   protected readonly resumen = this.evaluacionesService.resumenResource(
     () => this.asignaturaId(),
     () => this.meta(),
@@ -122,14 +127,26 @@ export class AsignaturaDetalle {
   }
 
   protected irAEstudio(): void {
-    document.querySelector('app-sesiones-estudio')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    this.vista.set('estudio');
+    requestAnimationFrame(() =>
+      document.querySelector('.selector-vista')?.scrollIntoView({
+        behavior:
+          document.documentElement.classList.contains('movimiento-reducido') ||
+          window.matchMedia('(prefers-reduced-motion: reduce)').matches
+            ? 'instant'
+            : 'smooth',
+        block: 'start',
+      }),
+    );
   }
 
   protected eliminarAsignatura(): void {
     const actual = this.asignatura.value();
     if (!actual) return;
     if (this.estudio.actual()?.asignaturaId === actual.id) {
-      this.notificaciones.error('Guarda o descarta la sesión de estudio antes de eliminar la asignatura.');
+      this.notificaciones.error(
+        'Guarda o descarta la sesión de estudio antes de eliminar la asignatura.',
+      );
       return;
     }
     this.dialog

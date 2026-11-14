@@ -1,6 +1,6 @@
 <mat-toolbar class="barra">
   <a class="marca" routerLink="/">
-    <mat-icon>school</mat-icon>
+    <mat-icon>auto_stories</mat-icon>
     <span class="marca-texto">Gestor de notas</span>
   </a>
 
@@ -10,6 +10,9 @@
     <a mat-button routerLink="/asignaturas" routerLinkActive="activo" class="enlace-escritorio">
       <mat-icon>menu_book</mat-icon> Asignaturas
     </a>
+    <a mat-button routerLink="/actividad" routerLinkActive="activo" class="enlace-escritorio"
+      ><mat-icon>bar_chart</mat-icon>Actividad</a
+    >
 
     <button mat-button [matMenuTriggerFor]="menuUsuario" aria-label="Menú de usuario">
       <mat-icon>account_circle</mat-icon>
@@ -25,22 +28,44 @@
         <mat-icon>menu_book</mat-icon>
         <span>Mis asignaturas</span>
       </a>
+      <a mat-menu-item routerLink="/cuenta"
+        ><mat-icon>manage_accounts</mat-icon><span>Mi cuenta</span></a
+      >
       <button mat-menu-item (click)="cerrarSesion()">
         <mat-icon>logout</mat-icon>
         <span>Cerrar sesión</span>
       </button>
     </mat-menu>
   } @else {
-    <a mat-button routerLink="/login" routerLinkActive="activo">Iniciar sesión</a>
-    <a mat-flat-button routerLink="/registro">Registrarse</a>
+    <a mat-button routerLink="/login" routerLinkActive="activo" class="enlace-acceso"
+      >Iniciar sesión</a
+    >
+    <a mat-flat-button routerLink="/registro" class="enlace-acceso">Registrarse</a>
   }
 </mat-toolbar>
 
-<main>
+<main id="contenido-principal" [class.con-navegacion]="auth.autenticado()">
   @if (estudio.actual(); as sesion) {
     <a mat-button [routerLink]="['/asignaturas', sesion.asignaturaId]" class="sesion-pendiente">
       <mat-icon>timer</mat-icon>{{ sesion.nombre }} · {{ estudio.reloj() }} · Volver a tu sesión
     </a>
   }
-  <router-outlet />
+  <router-outlet (activate)="pantallaLista()" />
 </main>
+
+@if (auth.autenticado()) {
+  <nav class="navegacion-inferior" aria-label="Navegación principal">
+    <a routerLink="/asignaturas" routerLinkActive="seleccionado" ariaCurrentWhenActive="page"
+      ><span><mat-icon aria-hidden="true">menu_book</mat-icon></span
+      >Asignaturas</a
+    >
+    <a routerLink="/actividad" routerLinkActive="seleccionado" ariaCurrentWhenActive="page"
+      ><span><mat-icon aria-hidden="true">bar_chart</mat-icon></span
+      >Actividad</a
+    >
+    <a routerLink="/cuenta" routerLinkActive="seleccionado" ariaCurrentWhenActive="page"
+      ><span><mat-icon aria-hidden="true">person_outline</mat-icon></span
+      >Cuenta</a
+    >
+  </nav>
+}

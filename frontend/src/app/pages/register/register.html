@@ -1,85 +1,97 @@
 <div class="pagina-centrada">
-  <mat-card class="tarjeta" appearance="outlined">
-    <mat-card-header>
-      <mat-card-title>Crear cuenta</mat-card-title>
-      <mat-card-subtitle>Empieza a organizar tus notas</mat-card-subtitle>
-    </mat-card-header>
+  <div class="auth-shell">
+    <section class="auth-intro" aria-label="Organiza tu semestre">
+      <div class="auth-symbol" aria-hidden="true"><mat-icon>auto_stories</mat-icon></div>
+      <span class="eyebrow">Gestor académico</span>
+      <h1>Organiza tus<br />asignaturas.</h1>
+      <p>
+        Crea una cuenta para registrar evaluaciones, consultar promedios ponderados y guardar tus
+        sesiones de estudio.
+      </p>
+      <div class="auth-detail">
+        <mat-icon aria-hidden="true">lock_outline</mat-icon> Datos académicos asociados a tu cuenta.
+      </div>
+    </section>
+    <mat-card class="tarjeta" appearance="outlined">
+      <mat-card-header>
+        <mat-card-title role="heading" aria-level="2">Crear cuenta</mat-card-title>
+        <mat-card-subtitle>Empieza a organizar tus notas</mat-card-subtitle>
+      </mat-card-header>
 
-    <form [formGroup]="form" (ngSubmit)="registrar()" novalidate>
-      <mat-card-content class="contenido">
-        <mat-form-field appearance="outline" class="campo-completo">
-          <mat-label>Nombre</mat-label>
-          <input matInput formControlName="nombre" autocomplete="name" />
-          @if (form.controls.nombre.hasError('required')) {
-            <mat-error>El nombre es obligatorio</mat-error>
-          } @else if (form.controls.nombre.hasError('maxlength')) {
-            <mat-error>Máximo 100 caracteres</mat-error>
-          }
-        </mat-form-field>
+      <form [formGroup]="form" (ngSubmit)="registrar()" novalidate>
+        <mat-card-content class="contenido">
+          <mat-form-field appearance="outline" class="campo-completo">
+            <mat-label>Nombre</mat-label>
+            <input matInput formControlName="nombre" autocomplete="name" />
+            @if (form.controls.nombre.hasError('required')) {
+              <mat-error>El nombre es obligatorio</mat-error>
+            } @else if (form.controls.nombre.hasError('maxlength')) {
+              <mat-error>Máximo 100 caracteres</mat-error>
+            }
+          </mat-form-field>
 
-        <mat-form-field appearance="outline" class="campo-completo">
-          <mat-label>Correo electrónico</mat-label>
-          <input matInput type="email" formControlName="correo" autocomplete="email" />
-          @if (form.controls.correo.hasError('required')) {
-            <mat-error>El correo es obligatorio</mat-error>
-          } @else if (form.controls.correo.hasError('email')) {
-            <mat-error>Ingresa un correo válido</mat-error>
-          }
-        </mat-form-field>
+          <mat-form-field appearance="outline" class="campo-completo">
+            <mat-label>Correo electrónico</mat-label>
+            <input matInput type="email" formControlName="correo" autocomplete="email" />
+            @if (form.controls.correo.hasError('required')) {
+              <mat-error>El correo es obligatorio</mat-error>
+            } @else if (form.controls.correo.hasError('email')) {
+              <mat-error>Ingresa un correo válido</mat-error>
+            }
+          </mat-form-field>
 
-        <mat-form-field appearance="outline" class="campo-completo">
-          <mat-label>Contraseña</mat-label>
-          <input
-            matInput
-            [type]="verPassword() ? 'text' : 'password'"
-            formControlName="password"
-            autocomplete="new-password"
-          />
-          <button
-            mat-icon-button
-            matSuffix
-            type="button"
-            (click)="verPassword.set(!verPassword())"
-            [attr.aria-label]="verPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
-          >
-            <mat-icon>{{ verPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          <mat-form-field appearance="outline" class="campo-completo">
+            <mat-label>Contraseña</mat-label>
+            <input
+              matInput
+              [type]="verPassword() ? 'text' : 'password'"
+              formControlName="password"
+              autocomplete="new-password"
+            />
+            <button
+              mat-icon-button
+              matSuffix
+              type="button"
+              (click)="verPassword.set(!verPassword())"
+              [attr.aria-label]="verPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+            >
+              <mat-icon>{{ verPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            <mat-hint>Mínimo 8 caracteres</mat-hint>
+            @if (form.controls.password.hasError('required')) {
+              <mat-error>La contraseña es obligatoria</mat-error>
+            } @else if (form.controls.password.hasError('minlength')) {
+              <mat-error>Debe tener al menos 8 caracteres</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="campo-completo">
+            <mat-label>Confirmar contraseña</mat-label>
+            <input
+              matInput
+              [type]="verPassword() ? 'text' : 'password'"
+              formControlName="confirmar"
+              autocomplete="new-password"
+            />
+            @if (form.controls.confirmar.hasError('required')) {
+              <mat-error>Repite la contraseña</mat-error>
+            } @else if (form.controls.confirmar.hasError('noCoinciden')) {
+              <mat-error>Las contraseñas no coinciden</mat-error>
+            }
+          </mat-form-field>
+        </mat-card-content>
+
+        <mat-card-actions class="acciones">
+          <button mat-flat-button type="submit" class="boton-principal" [disabled]="cargando()">
+            @if (cargando()) {
+              <mat-spinner diameter="20" />
+            } @else {
+              Crear cuenta
+            }
           </button>
-          <mat-hint>Mínimo 8 caracteres</mat-hint>
-          @if (form.controls.password.hasError('required')) {
-            <mat-error>La contraseña es obligatoria</mat-error>
-          } @else if (form.controls.password.hasError('minlength')) {
-            <mat-error>Debe tener al menos 8 caracteres</mat-error>
-          }
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="campo-completo">
-          <mat-label>Confirmar contraseña</mat-label>
-          <input
-            matInput
-            [type]="verPassword() ? 'text' : 'password'"
-            formControlName="confirmar"
-            autocomplete="new-password"
-          />
-          @if (form.controls.confirmar.hasError('required')) {
-            <mat-error>Repite la contraseña</mat-error>
-          } @else if (form.controls.confirmar.hasError('noCoinciden')) {
-            <mat-error>Las contraseñas no coinciden</mat-error>
-          }
-        </mat-form-field>
-      </mat-card-content>
-
-      <mat-card-actions class="acciones">
-        <button mat-flat-button type="submit" class="boton-principal" [disabled]="cargando()">
-          @if (cargando()) {
-            <mat-spinner diameter="20" />
-          } @else {
-            Crear cuenta
-          }
-        </button>
-        <span class="alterno">
-          ¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a>
-        </span>
-      </mat-card-actions>
-    </form>
-  </mat-card>
+          <span class="alterno"> ¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a> </span>
+        </mat-card-actions>
+      </form>
+    </mat-card>
+  </div>
 </div>

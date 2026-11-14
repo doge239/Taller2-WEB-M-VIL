@@ -1,0 +1,103 @@
+<div class="pagina actividad">
+  <header class="encabezado">
+    <div>
+      <p class="contexto">Registro personal</p>
+      <h1>Actividad de estudio</h1>
+      <p class="subtitulo">Tiempo dedicado a tus asignaturas y sesiones guardadas.</p>
+    </div>
+    <button mat-stroked-button (click)="panel.reload()">
+      <mat-icon>refresh</mat-icon>Actualizar
+    </button>
+  </header>
+  @if (panel.isLoading() && !panel.hasValue()) {
+    <mat-progress-bar mode="indeterminate" aria-label="Cargando actividad" />
+  }
+  @if (panel.error()) {
+    <app-estado-vacio
+      icono="cloud_off"
+      titulo="No se pudo cargar la actividad"
+      descripcion="Comprueba tu conexión y vuelve a intentarlo."
+      ><button mat-stroked-button (click)="panel.reload()">Reintentar</button></app-estado-vacio
+    >
+  } @else if (panel.value(); as p) {
+    <div class="actividad-totales">
+      <div>
+        <mat-icon aria-hidden="true">schedule</mat-icon
+        ><strong>{{ duracion(p.segundos_estudio) }}</strong
+        ><span>Tiempo registrado</span>
+      </div>
+      <div>
+        <mat-icon aria-hidden="true">fact_check</mat-icon><strong>{{ p.sesiones_estudio }}</strong
+        ><span>Sesiones guardadas</span>
+      </div>
+      <div>
+        <mat-icon aria-hidden="true">menu_book</mat-icon><strong>{{ distribucion().length }}</strong
+        ><span>Asignaturas estudiadas</span>
+      </div>
+    </div>
+    @if (p.sesiones_estudio === 0) {
+      <app-estado-vacio
+        icono="timer"
+        titulo="Todavía no registras sesiones"
+        descripcion="Abre una asignatura y pulsa Estudiar. Al guardar una sesión, aparecerá aquí."
+        ><a mat-flat-button routerLink="/asignaturas">Elegir asignatura</a></app-estado-vacio
+      >
+    } @else {
+      <section class="distribucion glass" aria-labelledby="titulo-distribucion">
+        <h2 id="titulo-distribucion">Dedicación por asignatura</h2>
+        <p>Distribución del tiempo guardado. No representa rendimiento ni asistencia.</p>
+        @for (a of distribucion(); track a.id) {
+          <div class="barra-asignatura">
+            <div>
+              <a [routerLink]="['/asignaturas', a.id]">{{ a.nombre }}</a
+              ><span
+                >{{ duracion(a.segundos_estudio) }} · {{ a.sesiones_estudio }}
+                {{ a.sesiones_estudio === 1 ? 'sesión' : 'sesiones' }}</span
+              >
+            </div>
+            <mat-progress-bar
+              mode="determinate"
+              [value]="p.segundos_estudio ? (a.segundos_estudio / p.segundos_estudio) * 100 : 0"
+              [attr.aria-label]="a.nombre + ': ' + duracion(a.segundos_estudio)"
+            />
+          </div>
+        }
+      </section>
+      <section class="historial" aria-labelledby="titulo-historial">
+        <div class="historial-cabecera">
+          <div>
+            <h2 id="titulo-historial">Sesiones recientes</h2>
+            <p>Últimas 100 sesiones de todas tus asignaturas.</p>
+          </div>
+          <mat-form-field appearance="outline" subscriptSizing="dynamic"
+            ><mat-label>Filtrar por asignatura</mat-label
+            ><mat-select [value]="asignatura()" (selectionChange)="asignatura.set($event.value)"
+              ><mat-option [value]="null">Todas</mat-option>
+              @for (a of p.asignaturas; track a.id) {
+                <mat-option [value]="a.id">{{ a.nombre }}</mat-option>
+              }
+            </mat-select></mat-form-field
+          >
+        </div>
+        @for (s of registros(); track s.id) {
+          <article class="actividad-registro">
+            <div class="registro-marca" aria-hidden="true"><mat-icon>check</mat-icon></div>
+            <div class="registro-info">
+              <a [routerLink]="['/asignaturas', s.asignatura_id]">{{ s.asignatura_nombre }}</a>
+              <h3>{{ s.objetivo }}</h3>
+              <p>
+                {{ s.inicio | date: 'dd/MM/yyyy · HH:mm' }} <span>·</span>
+                {{
+                  s.sensor_disponible ? s.movimientos + ' movimientos' : 'Sin datos de movimiento'
+                }}
+              </p>
+            </div>
+            <strong>{{ duracion(s.duracion_segundos) }}</strong>
+          </article>
+        } @empty {
+          <p class="sin-registros">No hay sesiones de esta asignatura entre las últimas 100.</p>
+        }
+      </section>
+    }
+  }
+</div>

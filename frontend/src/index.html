@@ -1,18 +1,95 @@
 <!doctype html>
 <html lang="es">
-<head>
-  <meta charset="utf-8">
-  <title>Gestor de notas</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="Gestiona tus asignaturas y evaluaciones universitarias. Calcula promedios, nota necesaria y estado de tu meta académica.">
-  <meta name="theme-color" content="#1a0533">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
-  <app-root></app-root>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title>Gestor de notas</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="Gestiona tus asignaturas y evaluaciones universitarias. Calcula promedios, nota necesaria y estado de tu meta académica."
+    />
+    <meta name="theme-color" content="#f4f5f4" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <style>
+      .inicio-app {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        background: #f4f5f4;
+        color: #263c4d;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      }
+      .inicio-app svg {
+        width: 108px;
+        height: 108px;
+        animation: libroIniciar 0.5s ease both;
+      }
+      .inicio-libro {
+        fill: #285675;
+      }
+      .inicio-trazo {
+        fill: none;
+        stroke: #f4f5f4;
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-dasharray: 160;
+        animation: trazoIniciar 0.5s ease both;
+      }
+      .inicio-app strong {
+        font-size: 19px;
+        font-weight: 600;
+        letter-spacing: -0.03em;
+      }
+      .inicio-app span {
+        font-size: 11px;
+        color: #687780;
+      }
+      @keyframes libroIniciar {
+        from {
+          opacity: 0.3;
+          transform: scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      @keyframes trazoIniciar {
+        from {
+          stroke-dashoffset: 160;
+        }
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .inicio-app svg,
+        .inicio-trazo {
+          animation: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <app-root>
+      <div class="inicio-app" role="status" aria-label="Iniciando Gestor de notas">
+        <svg viewBox="0 0 108 108" aria-hidden="true">
+          <path
+            class="inicio-libro"
+            d="M28 33Q41 29 54 37Q67 29 80 33V72Q67 68 54 76Q41 68 28 72Z"
+          />
+          <path
+            class="inicio-trazo"
+            d="M54 38V73M34 43Q42 41 48 45M34 52Q42 50 48 54M60 45Q68 41 74 43M60 54Q68 50 74 52"
+          />
+        </svg>
+        <strong>Gestor de notas</strong><span>Asignaturas · Evaluaciones · Estudio</span>
+      </div>
+    </app-root>
+  </body>
 </html>

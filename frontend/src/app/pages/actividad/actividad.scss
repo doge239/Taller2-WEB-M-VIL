@@ -1,0 +1,218 @@
+.encabezado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+.contexto {
+  font-size: 12px;
+  color: var(--app-muted);
+  margin: 0 0 10px;
+}
+h1 {
+  font-size: clamp(28px, 4vw, 36px);
+  font-weight: 650;
+  letter-spacing: -0.045em;
+  margin: 0;
+}
+.subtitulo {
+  font-size: 14px;
+  color: var(--app-muted);
+  line-height: 1.6;
+  margin: 10px 0 0;
+}
+.actividad-totales {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 28px 0;
+}
+.actividad-totales > div {
+  padding: 24px;
+  background: var(--app-glass);
+  border: 1px solid #fff;
+  border-radius: 18px;
+}
+.actividad-totales mat-icon {
+  color: #668174;
+  font-size: 21px;
+  margin-bottom: 16px;
+}
+.actividad-totales strong {
+  display: block;
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+.actividad-totales span {
+  display: block;
+  font-size: 12px;
+  color: var(--app-muted);
+  margin-top: 7px;
+}
+.distribucion {
+  padding: 28px;
+  margin-bottom: 32px;
+}
+.distribucion h2,
+.historial h2 {
+  font-size: 18px;
+  letter-spacing: -0.025em;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+.distribucion > p,
+.historial-cabecera p {
+  font-size: 12px;
+  color: var(--app-muted);
+  line-height: 1.6;
+  margin: 0 0 24px;
+}
+.barra-asignatura {
+  margin: 22px 0;
+}
+.barra-asignatura:last-child {
+  margin-bottom: 0;
+}
+.barra-asignatura > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.barra-asignatura a {
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--app-text);
+}
+.barra-asignatura span {
+  font-size: 12px;
+  color: var(--app-muted);
+  white-space: nowrap;
+}
+.historial-cabecera {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.historial-cabecera p {
+  margin-bottom: 0;
+}
+.historial-cabecera mat-form-field {
+  width: 240px;
+}
+.actividad-registro {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--app-line);
+  animation: registroEntrar 0.28s ease both;
+}
+.registro-marca {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #e4ede7;
+  color: #466d56;
+}
+.registro-marca mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+.registro-info {
+  flex: 1;
+  min-width: 0;
+}
+.registro-info > a {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--app-accent);
+  text-decoration: none;
+}
+.registro-info h3 {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.6;
+  margin: 7px 0;
+  overflow-wrap: anywhere;
+}
+.registro-info p {
+  font-size: 11px;
+  color: var(--app-muted);
+  line-height: 1.7;
+  margin: 0;
+}
+.registro-info p span {
+  margin: 0 5px;
+}
+.actividad-registro > strong {
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.sin-registros {
+  padding: 26px 0;
+  color: var(--app-muted);
+  font-size: 13px;
+}
+@keyframes registroEntrar {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (max-width: 600px) {
+  .actividad-totales {
+    gap: 8px;
+  }
+  .actividad-totales > div {
+    padding: 17px 12px;
+  }
+  .actividad-totales strong {
+    font-size: 22px;
+  }
+  .actividad-totales span {
+    font-size: 10px;
+    line-height: 1.5;
+  }
+  .distribucion {
+    padding: 22px;
+  }
+  .barra-asignatura > div {
+    align-items: flex-start;
+  }
+  .barra-asignatura span {
+    font-size: 11px;
+  }
+  .actividad-registro {
+    gap: 10px;
+  }
+  .registro-marca {
+    width: 28px;
+    height: 28px;
+  }
+  .actividad-registro > strong {
+    font-size: 12px;
+  }
+  .historial-cabecera mat-form-field {
+    width: 100%;
+  }
+}

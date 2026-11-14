@@ -1,0 +1,4 @@
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android" android:drawable="@drawable/study_launch_mark">
+    <target android:name="book" android:animation="@animator/study_book_arrive" />
+    <target android:name="lines" android:animation="@animator/study_lines_draw" />
+</animated-vector>

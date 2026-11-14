@@ -22,6 +22,8 @@ export class AndroidNavigationService {
           this.dialogs.openDialogs.at(-1)?.close();
         } else if (/^\/asignaturas\/[^/?]+/.test(this.router.url)) {
           void this.router.navigateByUrl('/asignaturas');
+        } else if (['/actividad', '/cuenta'].includes(this.router.url.split('?')[0])) {
+          void this.router.navigateByUrl('/asignaturas');
         } else if (['/login', '/asignaturas'].includes(this.router.url.split('?')[0])) {
           void App.minimizeApp();
         } else if (canGoBack) {
@@ -32,6 +34,8 @@ export class AndroidNavigationService {
       });
     });
 
-    this.destroyRef.onDestroy(() => { void listener.then((handle) => handle.remove()); });
+    this.destroyRef.onDestroy(() => {
+      void listener.then((handle) => handle.remove());
+    });
   }
 }

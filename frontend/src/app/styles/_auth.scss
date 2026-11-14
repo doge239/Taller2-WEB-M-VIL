@@ -1,0 +1,139 @@
+.auth-shell {
+  display: grid;
+  grid-template-columns: 1fr 440px;
+  gap: 90px;
+  align-items: center;
+  width: 100%;
+  max-width: 1030px;
+}
+.auth-intro {
+  max-width: 460px;
+}
+.auth-symbol {
+  display: grid;
+  place-items: center;
+  width: 66px;
+  height: 66px;
+  border-radius: 21px;
+  margin-bottom: 36px;
+  background: #ffffffa6;
+  border: 1px solid #fff;
+  box-shadow: 0 12px 24px -15px #263d643b;
+  color: var(--app-accent);
+  backdrop-filter: blur(20px);
+}
+.auth-symbol mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+}
+.auth-intro h1 {
+  margin: 0;
+  font-size: clamp(36px, 5vw, 54px);
+  font-weight: 650;
+  line-height: 1.08;
+  letter-spacing: -0.065em;
+  color: var(--app-text);
+}
+.auth-intro p {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--app-muted);
+  margin: 24px 0;
+  max-width: 380px;
+}
+.auth-detail {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 36px;
+  font-size: 12px;
+  color: var(--app-muted);
+}
+.auth-detail mat-icon {
+  color: #65819c;
+  font-size: 19px;
+  width: 19px;
+  height: 19px;
+}
+.tarjeta {
+  width: 100%;
+  padding: 20px 16px 12px;
+  border-radius: 28px;
+}
+.tarjeta mat-card-header {
+  padding: 16px 16px 0;
+}
+.tarjeta mat-card-title {
+  font-size: 26px;
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  color: var(--app-text);
+}
+.tarjeta mat-card-subtitle {
+  color: var(--app-muted);
+  font-size: 13px;
+  margin-top: 8px;
+}
+.contenido {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-top: 30px;
+}
+.acciones {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 22px;
+  padding: 4px 16px 20px;
+}
+.boton-principal {
+  min-height: 48px;
+  font-size: 14px;
+}
+.alterno {
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--app-muted);
+}
+.alterno a {
+  text-decoration: none;
+  font-weight: 600;
+  color: var(--app-accent);
+}
+.alterno a:hover {
+  text-decoration: underline;
+}
+@media (max-width: 850px) {
+  .auth-shell {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    max-width: 440px;
+  }
+  .auth-intro {
+    text-align: center;
+  }
+  .auth-symbol {
+    margin: 0 auto 20px;
+    width: 52px;
+    height: 52px;
+    border-radius: 17px;
+  }
+  .auth-intro h1 {
+    font-size: 34px;
+  }
+  .auth-intro p,
+  .auth-detail {
+    display: none;
+  }
+  .auth-intro .eyebrow {
+    margin-bottom: 12px;
+    font-size: 10px;
+  }
+  .tarjeta {
+    padding: 12px 8px 8px;
+  }
+}

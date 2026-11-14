@@ -1,57 +1,69 @@
 <div class="pagina-centrada">
-  <mat-card class="tarjeta" appearance="outlined">
-    <mat-card-header>
-      <mat-card-title>Iniciar sesión</mat-card-title>
-      <mat-card-subtitle>Accede a tu gestor de notas</mat-card-subtitle>
-    </mat-card-header>
+  <div class="auth-shell">
+    <section class="auth-intro" aria-label="Tu espacio académico">
+      <div class="auth-symbol" aria-hidden="true"><mat-icon>auto_stories</mat-icon></div>
+      <span class="eyebrow">Gestor académico</span>
+      <h1>Notas, evaluaciones<br />y estudio.</h1>
+      <p>
+        Consulta tus promedios, calcula la nota que necesitas y registra el tiempo que dedicas a
+        cada asignatura.
+      </p>
+      <div class="auth-detail">
+        <mat-icon aria-hidden="true">school</mat-icon> Escala de notas de 1,0 a 7,0.
+      </div>
+    </section>
+    <mat-card class="tarjeta" appearance="outlined">
+      <mat-card-header>
+        <mat-card-title role="heading" aria-level="2">Iniciar sesión</mat-card-title>
+        <mat-card-subtitle>Ingresa con tu correo y contraseña.</mat-card-subtitle>
+      </mat-card-header>
 
-    <form [formGroup]="form" (ngSubmit)="ingresar()" novalidate>
-      <mat-card-content class="contenido">
-        <mat-form-field appearance="outline" class="campo-completo">
-          <mat-label>Correo electrónico</mat-label>
-          <input matInput type="email" formControlName="correo" autocomplete="email" />
-          @if (form.controls.correo.hasError('required')) {
-            <mat-error>El correo es obligatorio</mat-error>
-          } @else if (form.controls.correo.hasError('email')) {
-            <mat-error>Ingresa un correo válido</mat-error>
-          }
-        </mat-form-field>
+      <form [formGroup]="form" (ngSubmit)="ingresar()" novalidate>
+        <mat-card-content class="contenido">
+          <mat-form-field appearance="outline" class="campo-completo">
+            <mat-label>Correo electrónico</mat-label>
+            <input matInput type="email" formControlName="correo" autocomplete="email" />
+            @if (form.controls.correo.hasError('required')) {
+              <mat-error>El correo es obligatorio</mat-error>
+            } @else if (form.controls.correo.hasError('email')) {
+              <mat-error>Ingresa un correo válido</mat-error>
+            }
+          </mat-form-field>
 
-        <mat-form-field appearance="outline" class="campo-completo">
-          <mat-label>Contraseña</mat-label>
-          <input
-            matInput
-            [type]="verPassword() ? 'text' : 'password'"
-            formControlName="password"
-            autocomplete="current-password"
-          />
-          <button
-            mat-icon-button
-            matSuffix
-            type="button"
-            (click)="verPassword.set(!verPassword())"
-            [attr.aria-label]="verPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
-          >
-            <mat-icon>{{ verPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          <mat-form-field appearance="outline" class="campo-completo">
+            <mat-label>Contraseña</mat-label>
+            <input
+              matInput
+              [type]="verPassword() ? 'text' : 'password'"
+              formControlName="password"
+              autocomplete="current-password"
+            />
+            <button
+              mat-icon-button
+              matSuffix
+              type="button"
+              (click)="verPassword.set(!verPassword())"
+              [attr.aria-label]="verPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+            >
+              <mat-icon>{{ verPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            @if (form.controls.password.hasError('required')) {
+              <mat-error>La contraseña es obligatoria</mat-error>
+            }
+          </mat-form-field>
+        </mat-card-content>
+
+        <mat-card-actions class="acciones">
+          <button mat-flat-button type="submit" class="boton-principal" [disabled]="cargando()">
+            @if (cargando()) {
+              <mat-spinner diameter="20" />
+            } @else {
+              Ingresar
+            }
           </button>
-          @if (form.controls.password.hasError('required')) {
-            <mat-error>La contraseña es obligatoria</mat-error>
-          }
-        </mat-form-field>
-      </mat-card-content>
-
-      <mat-card-actions class="acciones">
-        <button mat-flat-button type="submit" class="boton-principal" [disabled]="cargando()">
-          @if (cargando()) {
-            <mat-spinner diameter="20" />
-          } @else {
-            Ingresar
-          }
-        </button>
-        <span class="alterno">
-          ¿No tienes cuenta? <a routerLink="/registro">Regístrate</a>
-        </span>
-      </mat-card-actions>
-    </form>
-  </mat-card>
+          <span class="alterno"> ¿No tienes cuenta? <a routerLink="/registro">Regístrate</a> </span>
+        </mat-card-actions>
+      </form>
+    </mat-card>
+  </div>
 </div>

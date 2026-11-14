@@ -1,112 +1,282 @@
-/* ─── ENCABEZADO ─────────────────────────────────────────────────── */
 .encabezado {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
+  align-items: center;
+  gap: 24px;
   flex-wrap: wrap;
   margin-bottom: 28px;
-
-  h1 {
-    margin: 0;
-    font-size: 2rem;
-    font-weight: 700;
-    letter-spacing: -0.04em;
-    /* Gradiente en el título */
-    background: linear-gradient(135deg, #e9d5ff 0%, #93c5fd 60%, #67e8f9 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .subtitulo {
-    margin: 6px 0 0;
-    color: rgba(255, 255, 255, 0.45);
-    font-size: 0.95rem;
-  }
 }
-
-.acciones-fila { display: flex; gap: 10px; flex-wrap: wrap; }
-
-/* ─── ESTADOS ────────────────────────────────────────────────────── */
-.centro {
+.fecha {
+  font-size: 12px;
+  color: var(--app-muted);
+  text-transform: capitalize;
+  margin: 0 0 12px;
+}
+h1 {
+  margin: 0;
+  font-size: clamp(28px, 4vw, 36px);
+  font-weight: 650;
+  letter-spacing: -0.045em;
+  line-height: 1.2;
+}
+.subtitulo {
+  margin: 10px 0 0;
+  color: var(--app-muted);
+  font-size: 14px;
+}
+.aviso-panel {
+  font-size: 12px;
+  color: var(--app-muted);
+  margin-top: -18px;
+}
+.seccion-listado {
   display: flex;
-  justify-content: center;
-  padding: 72px 0;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 20px;
 }
-
-.barra-recarga {
-  margin-bottom: 16px;
-  border-radius: 4px;
+.seccion-listado h2 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
-
-/* ─── FILTROS ────────────────────────────────────────────────────── */
+.seccion-listado > span {
+  font-size: 12px;
+  color: var(--app-muted);
+}
 .filtros {
   display: flex;
   gap: 12px;
-  flex-wrap: wrap;
   align-items: center;
-  margin-bottom: 24px;
-
-  /* Fondo glass en los form-fields */
-  mat-form-field {
-    .mdc-text-field--outlined .mdc-notched-outline__leading,
-    .mdc-text-field--outlined .mdc-notched-outline__notch,
-    .mdc-text-field--outlined .mdc-notched-outline__trailing {
-      border-color: rgba(139, 92, 246, 0.3) !important;
-    }
-  }
+  flex-wrap: wrap;
+  margin-bottom: 16px;
 }
-
-.filtro-texto   { flex: 1 1 260px; }
-.filtro-semestre { flex: 0 1 200px; }
-
-/* ─── GRILLA DE ASIGNATURAS ──────────────────────────────────────── */
-.grilla {
+.filtro-texto {
+  flex: 1 1 220px;
+}
+.filtro-semestre {
+  flex: 0 1 210px;
+}
+.chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+.chips button {
+  min-height: 38px;
+  padding: 7px 12px;
+  border: 1px solid var(--app-line);
+  background: #ffffff65;
+  color: var(--app-muted);
+  border-radius: 10px;
+  font-size: 12px;
+  cursor: pointer;
+  transition:
+    background 0.18s,
+    color 0.18s;
+}
+.chips button span {
+  margin-left: 7px;
+  font-size: 11px;
+  opacity: 0.8;
+}
+.chips .seleccionado {
+  background: #e6edf5;
+  color: #294f74;
+  border-color: #c9d7e6;
+}
+.chips button:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+.chips .limpiar {
+  border-color: transparent;
+  background: none;
+  color: var(--app-accent);
+}
+.grilla,
+.skeleton-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
   gap: 20px;
 }
-
-/* ─── CARD DE ASIGNATURA ─────────────────────────────────────────── */
 .asignatura {
-  padding: 4px 0 0;
-  cursor: default;
-
-  mat-card-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    color: rgba(255, 255, 255, 0.92);
+  overflow: hidden;
+  animation: fichaEntrar 0.36s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--orden, 0) * 45ms);
+  transition:
+    box-shadow 0.2s,
+    border-color 0.2s;
+}
+.ficha-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 22px 0;
+}
+.asignatura-icono {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: #e8edf4;
+  color: #446482;
+}
+.asignatura:nth-child(3n + 2) .asignatura-icono {
+  background: #e7efeb;
+  color: #397461;
+}
+.asignatura:nth-child(3n) .asignatura-icono {
+  background: #f2eee4;
+  color: #887044;
+}
+.semestre-badge {
+  font-size: 11px;
+  color: var(--app-muted);
+  padding: 5px 8px;
+  background: #eef0f3;
+  border-radius: 6px;
+}
+.asignatura mat-card-header {
+  padding: 18px 22px 0;
+}
+.asignatura mat-card-title {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.asignatura mat-card-subtitle {
+  font-size: 12px;
+  color: var(--app-muted);
+  margin-top: 4px;
+}
+.asignatura mat-card-content {
+  padding: 22px;
+}
+.ficha-nota {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+.ficha-nota div > span {
+  display: block;
+  font-size: 11px;
+  color: var(--app-muted);
+}
+.ficha-nota strong {
+  display: block;
+  margin-top: 7px;
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+.ficha-nota .nota-baja {
+  color: #a55145;
+}
+.estado-notas {
+  font-size: 11px;
+  color: #526b61;
+  padding: 5px 7px;
+  background: #eaf1ed;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.estado-notas.pendientes {
+  color: #826b40;
+  background: #f5f0e5;
+}
+.avance {
+  display: flex;
+  justify-content: space-between;
+  color: var(--app-muted);
+  font-size: 11px;
+  margin-bottom: 9px;
+}
+.asignatura mat-card-actions {
+  padding: 10px 16px;
+  border-top: 1px solid var(--app-line);
+  gap: 2px;
+}
+.asignatura mat-card-actions a {
+  margin-left: auto;
+}
+.sin-resumen,
+.pie-listado {
+  font-size: 12px;
+  color: var(--app-muted);
+  line-height: 1.7;
+}
+.pie-listado {
+  margin: 22px 0 0;
+}
+.barra-recarga {
+  margin-bottom: 20px;
+}
+@keyframes fichaEntrar {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
   }
-
-  mat-card-subtitle {
-    margin-top: 6px !important;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    align-items: center;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
-
-/* Separador sutil entre header y acciones */
-mat-card-actions {
-  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
-  padding: 8px 8px 8px !important;
-}
-
-/* ─── RESPONSIVE ─────────────────────────────────────────────────── */
 @media (max-width: 600px) {
   .encabezado {
-    h1 { font-size: 1.5rem; }
-    /* Botón "Nueva asignatura" ocupa todo el ancho */
-    button { width: 100%; justify-content: center; }
+    gap: 22px;
+    margin-bottom: 24px;
   }
-
-  .grilla {
+  .acciones-fila {
+    width: 100%;
+  }
+  .acciones-fila > [mat-icon-button] {
+    display: none;
+  }
+  .acciones-fila > [mat-stroked-button],
+  .acciones-fila > [mat-flat-button] {
+    flex: 1;
+  }
+  .grilla,
+  .skeleton-grid {
     grid-template-columns: 1fr;
-    gap: 14px;
+    gap: 16px;
   }
-
-  .filtro-semestre { flex: 1 1 100%; }
+  .filtro-texto {
+    flex-basis: 100%;
+  }
+  .filtro-semestre {
+    flex: 1;
+  }
+  .chips {
+    gap: 6px;
+  }
+  .chips button {
+    padding: 7px 10px;
+  }
+  .seccion-listado h2 {
+    font-size: 16px;
+  }
+}
+.etiqueta-corta {
+  display: none;
+}
+@media (max-width: 600px) {
+  .etiqueta-completa {
+    display: none;
+  }
+  .etiqueta-corta {
+    display: inline;
+  }
+  .acciones-fila > [mat-flat-button] {
+    white-space: nowrap;
+  }
 }

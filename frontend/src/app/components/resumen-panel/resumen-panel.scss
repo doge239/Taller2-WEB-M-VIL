@@ -1,0 +1,91 @@
+:host {
+  display: block;
+}
+.panel-metricas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid #fff;
+  border-radius: 20px;
+  background: var(--app-glass);
+  box-shadow: var(--app-shadow);
+  margin-bottom: 32px;
+  overflow: hidden;
+}
+.dato {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 24px;
+  border-right: 1px solid var(--app-line);
+}
+.dato:last-child {
+  border-right: 0;
+}
+.dato strong {
+  display: block;
+  font-size: 26px;
+  letter-spacing: -0.04em;
+  font-weight: 600;
+  color: var(--app-text);
+  font-variant-numeric: tabular-nums;
+}
+.dato div > span {
+  display: block;
+  font-size: 12px;
+  color: var(--app-muted);
+  margin-top: 5px;
+}
+.dato-icono {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  background: #e8edf4;
+  color: #446482;
+  flex-shrink: 0;
+}
+.arena {
+  background: #f2eee4;
+  color: #887044;
+}
+.verde {
+  background: #e7efeb;
+  color: #397461;
+}
+.dato-enlace {
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.dato-enlace:hover {
+  background: #e8edf366;
+}
+@media (max-width: 600px) {
+  .panel-metricas {
+    gap: 0;
+    margin-bottom: 28px;
+    border-radius: 16px;
+  }
+  .dato {
+    display: block;
+    padding: 17px 12px;
+  }
+  .dato-icono {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+  }
+  .dato-icono mat-icon {
+    width: 17px;
+    height: 17px;
+    font-size: 17px;
+  }
+  .dato strong {
+    font-size: 22px;
+  }
+  .dato div > span {
+    font-size: 10px;
+    line-height: 1.5;
+  }
+}

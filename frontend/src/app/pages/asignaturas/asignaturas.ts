@@ -1,4 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -19,10 +20,14 @@ import { AuthService } from '../../services/auth.service';
 import { NotificacionService } from '../../services/notificacion.service';
 import { AsignaturaQr } from '../../components/asignatura-qr/asignatura-qr';
 import { EstudioService } from '../../services/estudio.service';
+import { PanelService } from '../../services/panel.service';
+import { ResumenPanel } from '../../components/resumen-panel/resumen-panel';
 
 @Component({
   selector: 'app-asignaturas',
   imports: [
+    DecimalPipe,
+    ResumenPanel,
     RouterLink,
     MatButtonModule,
     MatCardModule,
@@ -47,6 +52,21 @@ export class Asignaturas {
 
   /** Recurso reactivo: carga el listado desde la API (GET /api/asignaturas). */
   protected readonly lista = this.service.listarResource();
+  protected readonly panel = inject(PanelService).recurso();
+  protected readonly fecha = new Intl.DateTimeFormat('es-CL', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  }).format(new Date());
+  protected readonly categoria = signal<'todas' | 'pendientes'>('todas');
+  protected readonly resumenes = computed(
+    () => new Map((this.panel.value()?.asignaturas ?? []).map((a) => [a.id, a.resumen])),
+  );
+  protected readonly asignaturasPendientes = computed(
+    () =>
+      (this.panel.value()?.asignaturas ?? []).filter((a) => a.resumen.evaluaciones_pendientes > 0)
+        .length,
+  );
 
   // Signals de filtros de búsqueda.
   protected readonly texto = signal('');
@@ -62,14 +82,16 @@ export class Asignaturas {
     const s = this.semestre();
     return (this.lista.value() ?? []).filter(
       (a) =>
+        (this.categoria() === 'todas' ||
+          (this.resumenes().get(a.id)?.evaluaciones_pendientes ?? 0) > 0) &&
         (!s || a.semestre === s) &&
-        (!t ||
-          a.nombre.toLowerCase().includes(t) ||
-          (a.codigo ?? '').toLowerCase().includes(t)),
+        (!t || a.nombre.toLowerCase().includes(t) || (a.codigo ?? '').toLowerCase().includes(t)),
     );
   });
 
-  protected readonly hayFiltros = computed(() => !!this.texto().trim() || !!this.semestre());
+  protected readonly hayFiltros = computed(
+    () => !!this.texto().trim() || !!this.semestre() || this.categoria() !== 'todas',
+  );
 
   protected readonly mensajeError = computed(() =>
     this.notificaciones.mensajeDeError(this.lista.error(), 'No se pudieron cargar las asignaturas'),
@@ -78,6 +100,12 @@ export class Asignaturas {
   protected limpiarFiltros(): void {
     this.texto.set('');
     this.semestre.set('');
+    this.categoria.set('todas');
+  }
+
+  protected recargar(): void {
+    this.lista.reload();
+    this.panel.reload();
   }
 
   protected nueva(): void {
@@ -85,17 +113,23 @@ export class Asignaturas {
       .open(AsignaturaFormDialog, { data: null, autoFocus: 'first-tabbable' })
       .afterClosed()
       .subscribe((creada) => {
-        if (creada) this.lista.reload();
+        if (creada) this.recargar();
       });
   }
 
   protected importarQr(): void {
-    this.dialog.open(AsignaturaQr, { data: null }).afterClosed().subscribe(datos => {
-      if (!datos) return;
-      this.dialog.open(AsignaturaFormDialog, { data: datos }).afterClosed().subscribe(creada => {
-        if (creada) this.lista.reload();
+    this.dialog
+      .open(AsignaturaQr, { data: null })
+      .afterClosed()
+      .subscribe((datos) => {
+        if (!datos) return;
+        this.dialog
+          .open(AsignaturaFormDialog, { data: datos })
+          .afterClosed()
+          .subscribe((creada) => {
+            if (creada) this.recargar();
+          });
       });
-    });
   }
 
   protected editar(asignatura: Asignatura): void {
@@ -103,13 +137,15 @@ export class Asignaturas {
       .open(AsignaturaFormDialog, { data: asignatura })
       .afterClosed()
       .subscribe((editada) => {
-        if (editada) this.lista.reload();
+        if (editada) this.recargar();
       });
   }
 
   protected eliminar(asignatura: Asignatura): void {
     if (this.estudio.actual()?.asignaturaId === asignatura.id) {
-      this.notificaciones.error('Guarda o descarta la sesión de estudio antes de eliminar la asignatura.');
+      this.notificaciones.error(
+        'Guarda o descarta la sesión de estudio antes de eliminar la asignatura.',
+      );
       return;
     }
     this.dialog
@@ -126,10 +162,9 @@ export class Asignaturas {
         this.service.eliminar(asignatura.id).subscribe({
           next: () => {
             this.notificaciones.exito('Asignatura eliminada');
-            this.lista.reload();
+            this.recargar();
           },
-          error: (err) =>
-            this.notificaciones.errorDesde(err, 'No se pudo eliminar la asignatura'),
+          error: (err) => this.notificaciones.errorDesde(err, 'No se pudo eliminar la asignatura'),
         });
       });
   }

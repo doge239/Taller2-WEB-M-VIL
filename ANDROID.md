@@ -4,6 +4,18 @@ El proyecto Android está en `frontend/android`, con identificador `cl.gestornot
 El Taller 3 añade QR, GPS y acelerómetro nativo con historial de estudio.
 Consulta [TALLER3.md](TALLER3.md) para el flujo de uso, arquitectura y Demo Day.
 El dispositivo debe tener Android 8.0 / API 26 o posterior.
+
+La interfaz incluye navegación inferior, panel académico, actividad de estudio
+y preferencias de movimiento en Cuenta. El inicio usa una animación nativa
+AndroidX de un libro; Angular notifica cuando su primera pantalla está lista.
+El APK no espera a que responda el backend para salir de la pantalla inicial.
+El acceso de Android muestra el formulario directamente, sin la portada web.
+
+Esta versión se instaló y abrió en el emulador `Medium_Phone_API_37.0`.
+Se comprobó un arranque en frío, la llegada al formulario y la llamada nativa
+`AppLaunch.ready` tras el primer render. La grabación de esa prueba está en
+`frontend/artifacts/android-inicio.mp4` (archivo local, ignorado por Git).
+Esto no sustituye la prueba de cámara, GPS y acelerómetro en un teléfono real.
 Capacitor empaqueta el frontend Angular dentro de la aplicación. FastAPI y
 PostgreSQL siguen en el servidor: consultar y guardar notas requiere internet.
 La versión web conserva sus rutas `/api/` y su proxy de desarrollo/Caddy.
@@ -98,7 +110,7 @@ del repositorio.
 
 ## Verificación
 
-La ampliación del Taller 3 tiene 13 pruebas de backend y 8 de lógica móvil.
+La ampliación del Taller 3 tiene 14 pruebas de backend y 8 de lógica móvil.
 El test visual está en `frontend/tests/estudio-ui.py`: usa Playwright con API y
 GPS simulados y requiere Chromium instalado. Verifica importación y generación
 de QR, pausa, continuación, guardado con reintento, historial y eliminación.

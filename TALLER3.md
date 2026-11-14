@@ -15,7 +15,7 @@ Taller 2 se mantienen.
 | Requisito | Implementación | Archivo principal |
 |---|---|---|
 | Angular + Capacitor | Aplicación empaquetada, HTTP nativo y navegación Android | `frontend/capacitor.config.ts` |
-| Identidad y recursos | `cl.gestornotas.app`, libro con estrella, inicio oscuro | `frontend/android/app/src/main/res/drawable/study_mark.xml` |
+| Identidad y recursos | `cl.gestornotas.app`, libro azul pizarra, inicio claro animado | `frontend/android/app/src/main/res/drawable/study_mark.xml` |
 | Cámara y QR | Compartir desde una asignatura, escanear desde el listado, revisar y guardar una copia | `frontend/src/app/components/asignatura-qr/asignatura-qr.ts` |
 | GPS | Coordenadas y precisión asociadas a una sesión; enlace a OpenStreetMap | `frontend/src/app/services/movil.service.ts` |
 | Sensor adicional | Acelerómetro nativo Android durante las sesiones de estudio | `frontend/android/app/src/main/java/cl/gestornotas/app/StudyMotionPlugin.java` |
@@ -204,3 +204,48 @@ automatizadas no reemplazan.
 - [Barcode Scanner de Capacitor](https://github.com/ionic-team/capacitor-barcode-scanner/tree/main/plugin).
 - [Geolocalización de Capacitor](https://capacitorjs.com/docs/apis/geolocation).
 - [Plugins nativos Android de Capacitor](https://capacitorjs.com/docs/plugins/android).
+
+## Interfaz académica y experiencia Android
+
+El panel inicial muestra datos de la cuenta: promedio parcial por asignatura,
+porcentaje calificado y cantidad de evaluaciones sin nota. El filtro «Con notas
+pendientes» se refiere a notas aún no registradas, no a plazos de entrega.
+No se inventan fechas de evaluaciones ni se calcula un promedio general entre
+asignaturas con ponderaciones distintas.
+
+`GET /api/panel` entrega los resúmenes, los acumulados de estudio y las últimas
+100 sesiones del propietario autenticado. Las evaluaciones se consultan en
+bloque, sin una petición por tarjeta. Los totales y la distribución por
+asignatura consideran todas las sesiones guardadas; el listado reciente tiene
+un límite explícito de 100. Se reutiliza `calcular_resumen` con meta 4,0 para las
+tarjetas. La meta del detalle sigue siendo ajustable para la consulta actual.
+
+En el teléfono hay navegación inferior entre Asignaturas, Actividad y Cuenta.
+El detalle separa notas y estudio para evitar una pantalla excesivamente larga.
+El registro de estudio ofrece bloques de 15, 25 y 45 minutos como referencia;
+el aro representa tiempo transcurrido respecto de ese objetivo. No se detiene,
+guarda ni notifica automáticamente al cumplirlo. El objetivo temporal vive con
+la sesión en memoria y no añade un campo a la base de datos.
+
+La pantalla de inicio instalada usa AndroidX SplashScreen y un
+`AnimatedVectorDrawable`: un libro se escala suavemente y se dibujan sus líneas
+en 500 ms. `AppLaunchPlugin` permite que Angular avise después de renderizar
+su primera ruta; no espera al backend. El splash desaparece con un fundido de
+180 ms, sin duración mínima artificial y con un límite de seguridad de 4 s.
+No se añade una segunda pantalla de bienvenida a Android. En web, un dibujo
+equivalente ocupa el primer frame solo mientras Angular se inicializa.
+
+Las tarjetas entran de forma escalonada y las vistas cambian con transiciones
+cortas mediante View Transitions cuando el navegador lo permite. En Cuenta se
+puede reducir el movimiento; se guarda esa preferencia en el dispositivo y
+también se respeta `prefers-reduced-motion`. La animación nativa respeta los
+animadores del sistema, y su salida omite el fundido si Angular indica movimiento
+reducido. La preferencia local no modifica los ajustes de Android.
+
+Referencias: [inicio de Android](https://developer.android.com/develop/ui/views/launch/splash-screen/),
+[transiciones de Angular](https://angular.dev/api/router/withViewTransitions) y
+[movimiento reducido en W3C](https://www.w3.org/WAI/WCAG22/Techniques/css/C39).
+
+Las pruebas del backend incluyen el aislamiento y los acumulados del panel.
+La prueba visual usa datos ficticios exclusivamente en el navegador y guarda
+capturas y un video en `artifacts/`; no crea datos de demostración en producción.

@@ -1,45 +1,75 @@
-<div class="pagina">
+<div class="pagina dashboard">
   <header class="encabezado">
     <div>
+      <p class="fecha">{{ fecha }}</p>
       <h1>Mis asignaturas</h1>
-      <p class="subtitulo">Hola, {{ auth.usuario()?.nombre }}. Revisa y organiza tus ramos.</p>
+      <p class="subtitulo">{{ auth.usuario()?.nombre }}, este es tu resumen académico.</p>
     </div>
     <div class="acciones-fila">
-    <button mat-stroked-button (click)="importarQr()"><mat-icon>qr_code_scanner</mat-icon>Importar QR</button>
-    <button mat-flat-button (click)="nueva()">
-      <mat-icon>add</mat-icon> Nueva asignatura
-    </button>
+      <button
+        mat-icon-button
+        matTooltip="Actualizar"
+        aria-label="Actualizar panel"
+        (click)="recargar()"
+      >
+        <mat-icon>refresh</mat-icon>
+      </button>
+      <button mat-stroked-button (click)="importarQr()">
+        <mat-icon>qr_code_scanner</mat-icon>Importar QR
+      </button>
+      <button mat-flat-button (click)="nueva()" aria-label="Nueva asignatura">
+        <mat-icon>add</mat-icon><span class="etiqueta-completa">Nueva asignatura</span
+        ><span class="etiqueta-corta" aria-hidden="true">Nueva</span>
+      </button>
     </div>
   </header>
 
+  <app-resumen-panel
+    [asignaturas]="lista.value()?.length"
+    [pendientes]="panel.value()?.evaluaciones_pendientes"
+    [segundos]="panel.value()?.segundos_estudio"
+  />
+  @if (panel.error()) {
+    <p class="aviso-panel" role="status">
+      El resumen no está disponible. Puedes seguir gestionando tus asignaturas.
+      <button mat-button (click)="panel.reload()">Reintentar</button>
+    </p>
+  }
+
   @if (lista.isLoading() && !lista.hasValue()) {
-    <div class="centro"><mat-spinner diameter="48" /></div>
+    <div class="skeleton-grid" role="status" aria-label="Cargando asignaturas">
+      @for (i of [1, 2, 3]; track i) {
+        <div class="skeleton-card"><span></span><span></span><span></span></div>
+      }
+    </div>
   } @else if (lista.error()) {
     <app-estado-vacio icono="cloud_off" titulo="No se pudo cargar" [descripcion]="mensajeError()">
-      <button mat-stroked-button (click)="lista.reload()">
-        <mat-icon>refresh</mat-icon> Reintentar
+      <button mat-stroked-button (click)="recargar()">
+        <mat-icon>refresh</mat-icon>Reintentar
       </button>
     </app-estado-vacio>
   } @else {
     @if (lista.isLoading()) {
       <mat-progress-bar mode="indeterminate" class="barra-recarga" />
     }
-
     @if ((lista.value() ?? []).length === 0) {
       <app-estado-vacio
         icono="menu_book"
         titulo="Aún no tienes asignaturas"
-        descripcion="Crea tu primera asignatura para empezar a registrar evaluaciones."
+        descripcion="Agrega una asignatura con su semestre para registrar notas y sesiones de estudio."
       >
-        <button mat-flat-button (click)="nueva()">
-          <mat-icon>add</mat-icon> Crear asignatura
-        </button>
+        <button mat-flat-button (click)="nueva()"><mat-icon>add</mat-icon>Crear asignatura</button>
       </app-estado-vacio>
     } @else {
+      <div class="seccion-listado">
+        <h2>Asignaturas registradas</h2>
+        <span
+          >{{ semestres().length }} {{ semestres().length === 1 ? 'semestre' : 'semestres' }}</span
+        >
+      </div>
       <div class="filtros">
         <mat-form-field appearance="outline" subscriptSizing="dynamic" class="filtro-texto">
-          <mat-label>Buscar por nombre o código</mat-label>
-          <mat-icon matPrefix>search</mat-icon>
+          <mat-label>Buscar por nombre o código</mat-label><mat-icon matPrefix>search</mat-icon>
           <input
             matInput
             [value]="texto()"
@@ -47,54 +77,111 @@
             autocomplete="off"
           />
         </mat-form-field>
-
         <mat-form-field appearance="outline" subscriptSizing="dynamic" class="filtro-semestre">
-          <mat-label>Semestre</mat-label>
-          <mat-select [value]="semestre()" (selectionChange)="semestre.set($event.value)">
+          <mat-label>Semestre</mat-label
+          ><mat-select [value]="semestre()" (selectionChange)="semestre.set($event.value)">
             <mat-option value="">Todos</mat-option>
             @for (s of semestres(); track s) {
               <mat-option [value]="s">{{ s }}</mat-option>
             }
           </mat-select>
         </mat-form-field>
-
+      </div>
+      <div class="chips" role="group" aria-label="Filtrar asignaturas">
+        <button
+          type="button"
+          [class.seleccionado]="categoria() === 'todas'"
+          [attr.aria-pressed]="categoria() === 'todas'"
+          (click)="categoria.set('todas')"
+        >
+          Todas <span>{{ (lista.value() ?? []).length }}</span>
+        </button>
+        <button
+          type="button"
+          [disabled]="!panel.hasValue()"
+          [class.seleccionado]="categoria() === 'pendientes'"
+          [attr.aria-pressed]="categoria() === 'pendientes'"
+          (click)="categoria.set('pendientes')"
+        >
+          Con notas pendientes <span>{{ panel.hasValue() ? asignaturasPendientes() : '—' }}</span>
+        </button>
         @if (hayFiltros()) {
-          <button mat-button (click)="limpiarFiltros()">Limpiar filtros</button>
+          <button class="limpiar" type="button" (click)="limpiarFiltros()">Limpiar filtros</button>
         }
       </div>
-
       @if (filtradas().length === 0) {
         <app-estado-vacio
           icono="search_off"
           titulo="Sin resultados"
-          descripcion="Ninguna asignatura coincide con la búsqueda."
+          descripcion="No hay asignaturas que coincidan con los filtros."
+          ><button mat-stroked-button (click)="limpiarFiltros()">
+            Limpiar filtros
+          </button></app-estado-vacio
         >
-          <button mat-stroked-button (click)="limpiarFiltros()">Limpiar filtros</button>
-        </app-estado-vacio>
       } @else {
         <div class="grilla">
-          @for (a of filtradas(); track a.id) {
-            <mat-card appearance="outlined" class="asignatura">
-              <mat-card-header>
-                <mat-card-title>{{ a.nombre }}</mat-card-title>
-                <mat-card-subtitle>
-                  {{ a.codigo ? a.codigo + ' · ' : '' }}Semestre {{ a.semestre }}
-                </mat-card-subtitle>
-              </mat-card-header>
+          @for (a of filtradas(); track a.id; let i = $index) {
+            <mat-card appearance="outlined" class="asignatura" [style.--orden]="i < 6 ? i : 6">
+              <div class="ficha-cabecera">
+                <span class="asignatura-icono" aria-hidden="true"
+                  ><mat-icon>menu_book</mat-icon></span
+                ><span class="semestre-badge">{{ a.semestre }}</span>
+              </div>
+              <mat-card-header
+                ><mat-card-title>{{ a.nombre }}</mat-card-title
+                ><mat-card-subtitle>{{
+                  a.codigo || 'Sin código'
+                }}</mat-card-subtitle></mat-card-header
+              >
+              <mat-card-content>
+                @if (resumenes().get(a.id); as r) {
+                  <div class="ficha-nota">
+                    <div>
+                      <span>Promedio parcial</span
+                      ><strong
+                        [class.nota-baja]="r.promedio_parcial !== null && r.promedio_parcial < 4"
+                        >{{
+                          r.promedio_parcial !== null ? (r.promedio_parcial | number: '1.1-1') : '—'
+                        }}</strong
+                      >
+                    </div>
+                    <span class="estado-notas" [class.pendientes]="r.evaluaciones_pendientes > 0">{{
+                      r.evaluaciones_pendientes
+                        ? r.evaluaciones_pendientes + ' sin nota'
+                        : r.evaluaciones_totales
+                          ? 'Notas al día'
+                          : 'Sin evaluaciones'
+                    }}</span>
+                  </div>
+                  <div class="avance">
+                    <span>Porcentaje calificado</span
+                    ><span>{{ r.ponderacion_calificada | number: '1.0-1' }}%</span>
+                  </div>
+                  <mat-progress-bar mode="determinate" [value]="r.ponderacion_calificada" />
+                } @else {
+                  <p class="sin-resumen">Revisa evaluaciones y sesiones en el detalle.</p>
+                }
+              </mat-card-content>
               <mat-card-actions align="end">
                 <button mat-icon-button matTooltip="Editar" aria-label="Editar" (click)="editar(a)">
                   <mat-icon>edit</mat-icon>
                 </button>
-                <button mat-icon-button matTooltip="Eliminar" aria-label="Eliminar" (click)="eliminar(a)">
-                  <mat-icon>delete</mat-icon>
+                <button
+                  mat-icon-button
+                  matTooltip="Eliminar"
+                  aria-label="Eliminar"
+                  (click)="eliminar(a)"
+                >
+                  <mat-icon>delete_outline</mat-icon>
                 </button>
-                <a mat-flat-button [routerLink]="['/asignaturas', a.id]">
-                  Ver notas <mat-icon iconPositionEnd>arrow_forward</mat-icon>
-                </a>
+                <a mat-button [routerLink]="['/asignaturas', a.id]"
+                  >Ver notas <mat-icon iconPositionEnd>arrow_forward</mat-icon></a
+                >
               </mat-card-actions>
             </mat-card>
           }
         </div>
+        <p class="pie-listado">Los promedios se calculan por asignatura según sus ponderaciones.</p>
       }
     }
   }

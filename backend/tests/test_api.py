@@ -15,6 +15,40 @@ from app.security import ISSUER, hash_password, jwt_settings
 
 
 class APIIntegrationTests(unittest.TestCase):
+    def test_academic_panel_aggregates_only_own_grades_and_study(self):
+        import uuid
+        self.assertEqual(self.client.get('/api/panel').status_code, 401)
+        self.register()
+        headers = self.auth_headers()
+        empty = self.client.get('/api/panel', headers=headers).json()
+        self.assertEqual(empty['asignaturas'], [])
+        self.assertEqual(empty['segundos_estudio'], 0)
+        subject = self.create_subject(headers)
+        self.create_evaluation(headers, subject['id'], 'Certamen', 5, 40)
+        self.create_evaluation(headers, subject['id'], 'Examen', None, 60)
+        self.client.post(f"/api/asignaturas/{subject['id']}/sesiones", headers=headers, json={
+            'clave': str(uuid.uuid4()), 'inicio': (datetime.now(timezone.utc) - timedelta(hours=1)).isoformat(),
+            'duracion_segundos': 1500, 'movimientos': 0, 'sensor_disponible': False, 'objetivo': 'Repasar funciones',
+        })
+        data = self.client.get('/api/panel', headers=headers)
+        self.assertEqual(data.status_code, 200, data.text)
+        panel = data.json()
+        self.assertEqual(panel['evaluaciones_pendientes'], 1)
+        self.assertEqual(panel['evaluaciones_calificadas'], 1)
+        self.assertEqual(panel['segundos_estudio'], 1500)
+        self.assertEqual(panel['sesiones_estudio'], 1)
+        self.assertEqual(panel['asignaturas'][0]['resumen']['promedio_parcial'], 5)
+        self.assertEqual(panel['asignaturas'][0]['resumen']['ponderacion_calificada'], 40)
+        self.assertEqual(panel['actividad'][0]['asignatura_nombre'], subject['nombre'])
+        self.assertEqual(panel['actividad'][0]['objetivo'], 'Repasar funciones')
+        self.assert_response_has_no_secrets(data)
+        self.register(email='panel@example.com')
+        other = self.auth_headers(email='panel@example.com')
+        self.assertEqual(self.client.get('/api/panel', headers=other).json(), empty)
+        # La eliminación debe reflejarse en el resumen y la actividad del propietario.
+        self.client.delete(f"/api/asignaturas/{subject['id']}", headers=headers)
+        self.assertEqual(self.client.get('/api/panel', headers=headers).json(), empty)
+
     def test_study_session_persistence_retry_isolation_and_delete(self):
         import uuid
         self.register()
