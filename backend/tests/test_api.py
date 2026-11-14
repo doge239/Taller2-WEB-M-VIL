@@ -15,6 +15,57 @@ from app.security import ISSUER, hash_password, jwt_settings
 
 
 class APIIntegrationTests(unittest.TestCase):
+    def test_study_session_persistence_retry_isolation_and_delete(self):
+        import uuid
+        self.register()
+        headers = self.auth_headers()
+        subject = self.create_subject(headers)
+        url = f"/api/asignaturas/{subject['id']}/sesiones"
+        payload = {
+            "clave": str(uuid.uuid4()), "inicio": (datetime.now(timezone.utc) - timedelta(minutes=5)).isoformat(),
+            "duracion_segundos": 240, "movimientos": 3, "sensor_disponible": True,
+            "latitud": -33.45, "longitud": -70.66, "precision_metros": 12.5,
+            "objetivo": "Repasar derivadas",
+        }
+        self.assertEqual(self.client.get(url).status_code, 401)
+        saved = self.client.post(url, headers=headers, json=payload)
+        self.assertEqual(saved.status_code, 201, saved.text)
+        self.assertEqual(saved.json()["objetivo"], payload["objetivo"])
+        self.assertEqual(saved.json()["latitud"], -33.45)
+        self.assertEqual(self.client.post(url, headers=headers, json=payload).json()["id"], saved.json()["id"])
+        self.assertEqual(len(self.client.get(url, headers=headers).json()), 1)
+        self.register(email="otro@example.com")
+        other = self.auth_headers(email="otro@example.com")
+        self.assertEqual(self.client.get(url, headers=other).status_code, 404)
+        self.assertEqual(self.client.post(url, headers=other, json=payload).status_code, 404)
+        item = f"{url}/{saved.json()['id']}"
+        self.assertEqual(self.client.delete(item, headers=other).status_code, 404)
+        self.assertEqual(self.client.delete(item, headers=headers).status_code, 204)
+        self.assertEqual(self.client.get(url, headers=headers).json(), [])
+
+    def test_study_session_rejects_invalid_sensor_location_duration_and_fields(self):
+        import uuid
+        self.register()
+        headers = self.auth_headers()
+        subject = self.create_subject(headers)
+        url = f"/api/asignaturas/{subject['id']}/sesiones"
+        payload = {
+            "clave": str(uuid.uuid4()), "inicio": (datetime.now(timezone.utc) - timedelta(minutes=5)).isoformat(),
+            "duracion_segundos": 30, "movimientos": 0, "sensor_disponible": False, "objetivo": "Leer apuntes",
+        }
+        for invalid in [
+            {"latitud": 91, "longitud": 0}, {"latitud": 1}, {"precision_metros": 5},
+            {"movimientos": 1}, {"duracion_segundos": 0}, {"duracion_segundos": 999},
+            {"duracion_segundos": True}, {"objetivo": "   "}, {"usuario_id": 2},
+            {"inicio": datetime.now().isoformat()}, {"inicio": (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat()},
+        ]:
+            with self.subTest(invalid=invalid):
+                self.assertEqual(self.client.post(url, headers=headers, json=payload | invalid).status_code, 422)
+        saved = self.client.post(url, headers=headers, json=payload)
+        self.assertEqual(saved.status_code, 201, saved.text)
+        self.assertIsNone(saved.json()["latitud"])
+        self.assertFalse(saved.json()["sensor_disponible"])
+
     def setUp(self):
         self.test_password = secrets.token_urlsafe(24)
         self.engine = create_engine(

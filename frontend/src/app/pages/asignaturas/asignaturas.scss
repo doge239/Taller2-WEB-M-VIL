@@ -26,6 +26,8 @@
   }
 }
 
+.acciones-fila { display: flex; gap: 10px; flex-wrap: wrap; }
+
 /* ─── ESTADOS ────────────────────────────────────────────────────── */
 .centro {
   display: flex;

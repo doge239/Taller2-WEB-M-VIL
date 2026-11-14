@@ -26,6 +26,8 @@
         <p class="subtitulo">{{ a.codigo ? a.codigo + ' · ' : '' }}Semestre {{ a.semestre }}</p>
       </div>
       <div class="acciones-fila">
+        <button mat-flat-button (click)="irAEstudio()"><mat-icon>timer</mat-icon>Estudiar</button>
+        <button mat-stroked-button (click)="compartirQr()"><mat-icon>qr_code_2</mat-icon>Compartir QR</button>
         <button mat-stroked-button (click)="editarAsignatura()">
           <mat-icon>edit</mat-icon> Editar
         </button>
@@ -140,5 +142,6 @@
         }
       </mat-card-content>
     </mat-card>
+    <app-sesiones-estudio [asignaturaId]="a.id" [nombre]="a.nombre" />
   }
 </div>

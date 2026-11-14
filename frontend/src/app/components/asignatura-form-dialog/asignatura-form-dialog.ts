@@ -5,7 +5,7 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Asignatura } from '../../models/api.models';
+import { Asignatura, AsignaturaPayload } from '../../models/api.models';
 import { AsignaturasService } from '../../services/asignaturas.service';
 import { NotificacionService } from '../../services/notificacion.service';
 
@@ -28,10 +28,10 @@ export class AsignaturaFormDialog {
   private readonly service = inject(AsignaturasService);
   private readonly notificaciones = inject(NotificacionService);
   private readonly dialogRef = inject(MatDialogRef<AsignaturaFormDialog, Asignatura>);
-  protected readonly asignatura = inject<Asignatura | null>(MAT_DIALOG_DATA, { optional: true });
+  protected readonly asignatura = inject<Asignatura | AsignaturaPayload | null>(MAT_DIALOG_DATA, { optional: true });
 
   protected readonly guardando = signal(false);
-  protected readonly esEdicion = this.asignatura !== null;
+  protected readonly esEdicion = !!this.asignatura && 'id' in this.asignatura;
 
   protected readonly form = this.fb.nonNullable.group({
     nombre: [this.asignatura?.nombre ?? '', [Validators.required, Validators.maxLength(120)]],
@@ -56,7 +56,7 @@ export class AsignaturaFormDialog {
     }
 
     this.guardando.set(true);
-    const peticion = this.asignatura
+    const peticion = this.asignatura && 'id' in this.asignatura
       ? this.service.editar(this.asignatura.id, payload)
       : this.service.crear(payload);
 

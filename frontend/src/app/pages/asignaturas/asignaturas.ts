@@ -17,6 +17,8 @@ import { Asignatura } from '../../models/api.models';
 import { AsignaturasService } from '../../services/asignaturas.service';
 import { AuthService } from '../../services/auth.service';
 import { NotificacionService } from '../../services/notificacion.service';
+import { AsignaturaQr } from '../../components/asignatura-qr/asignatura-qr';
+import { EstudioService } from '../../services/estudio.service';
 
 @Component({
   selector: 'app-asignaturas',
@@ -38,6 +40,7 @@ import { NotificacionService } from '../../services/notificacion.service';
 })
 export class Asignaturas {
   private readonly service = inject(AsignaturasService);
+  private readonly estudio = inject(EstudioService);
   private readonly dialog = inject(MatDialog);
   private readonly notificaciones = inject(NotificacionService);
   protected readonly auth = inject(AuthService);
@@ -86,6 +89,15 @@ export class Asignaturas {
       });
   }
 
+  protected importarQr(): void {
+    this.dialog.open(AsignaturaQr, { data: null }).afterClosed().subscribe(datos => {
+      if (!datos) return;
+      this.dialog.open(AsignaturaFormDialog, { data: datos }).afterClosed().subscribe(creada => {
+        if (creada) this.lista.reload();
+      });
+    });
+  }
+
   protected editar(asignatura: Asignatura): void {
     this.dialog
       .open(AsignaturaFormDialog, { data: asignatura })
@@ -96,11 +108,15 @@ export class Asignaturas {
   }
 
   protected eliminar(asignatura: Asignatura): void {
+    if (this.estudio.actual()?.asignaturaId === asignatura.id) {
+      this.notificaciones.error('Guarda o descarta la sesión de estudio antes de eliminar la asignatura.');
+      return;
+    }
     this.dialog
       .open(ConfirmDialog, {
         data: {
           titulo: 'Eliminar asignatura',
-          mensaje: `¿Eliminar "${asignatura.nombre}"? También se eliminarán todas sus evaluaciones.`,
+          mensaje: `¿Eliminar "${asignatura.nombre}"? También se eliminarán sus evaluaciones y sesiones de estudio.`,
           textoConfirmar: 'Eliminar',
         },
       })

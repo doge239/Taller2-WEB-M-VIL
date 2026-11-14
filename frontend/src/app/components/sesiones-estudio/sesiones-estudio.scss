@@ -1,0 +1,42 @@
+:host { display: block; margin-top: 40px; scroll-margin-top: 90px; }
+.estudio { border-top: 1px solid #ffffff18; padding-top: 32px; }
+.cabecera, .historial-cabecera, .lugar, .acciones, .datos-sesion { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.cabecera, .historial-cabecera, .lugar { justify-content: space-between; }
+.cabecera h2 { font-size: 26px; margin: 8px 0; }
+.cabecera p, .lugar p, .ayuda, .nota-sensor { color: #b9b5ce; line-height: 1.6; }
+.etiqueta { color: #c5b5ff; font-size: 11px; letter-spacing: 2px; font-weight: 700; }
+.icono-cabecera { color: #b6a0ff; width: 48px; height: 48px; font-size: 48px; }
+.metricas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 24px 0; }
+.metricas div { padding: 20px 16px; background: #a78bfa0c; border: 1px solid #a78bfa25; border-radius: 16px; }
+.metricas strong { display: block; font-size: 30px; color: #ddd0ff; }
+.metricas span { display: block; font-size: 12px; color: #c2bed4; margin-top: 8px; }
+.panel { border-radius: 20px; }
+.panel mat-card-content { padding: 24px; }
+h3 { margin: 0 0 20px; font-weight: 500; }
+.objetivo { width: 100%; }
+.lugar { padding: 4px 0 12px; }
+.lugar p { font-size: 13px; max-width: 430px; margin: 6px 0; }
+.ayuda, .nota-sensor { font-size: 12px; }
+.ayuda { margin: 18px 0; }
+.coordenadas { color: #b9e9dc; font-size: 13px; }
+.aviso { padding: 14px; border-radius: 12px; background: #fbbf2410; color: #f6d899; font-size: 13px; line-height: 1.6; }
+.estado { color: #c6badf; display: flex; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 18px; }
+.punto { width: 8px; height: 8px; background: #e7b768; border-radius: 50%; }
+.en-curso { background: #6ee7b7; box-shadow: 0 0 12px #6ee7b755; }
+.reloj { font-size: clamp(48px, 10vw, 80px); font-variant-numeric: tabular-nums; text-align: center; margin: 20px 0; letter-spacing: 4px; color: #e0d4ff; }
+.datos-sesion { justify-content: center; margin-bottom: 24px; color: #bcb6ce; font-size: 13px; }
+.datos-sesion span { display: flex; gap: 6px; align-items: center; }
+.datos-sesion mat-icon { font-size: 18px; height: 18px; width: 18px; }
+.acciones { justify-content: center; }
+.historial-cabecera { margin: 28px 0 10px; }
+.historial-cabecera h3 { margin: 0; }
+.vacio { text-align: center; padding: 32px 16px; color: #b9b5ce; border: 1px dashed #ffffff20; border-radius: 16px; }
+.vacio mat-icon { color: #b6a0ff; }
+.registro { display: flex; gap: 14px; align-items: flex-start; padding: 20px 0; border-bottom: 1px solid #ffffff12; }
+.registro-icono { padding: 10px; background: #a78bfa15; border-radius: 12px; color: #c4b5fd; }
+.registro-detalle { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.registro small { display: block; color: #a9a4bd; margin-top: 6px; font-size: 12px; }
+.registro p { margin: 10px 0; font-size: 13px; color: #c2bed4; }
+.registro a { color: #c9b6ff; font-size: 13px; }
+.nota-sensor { margin-top: 24px; }
+@media (max-width: 480px) { .metricas { gap: 8px; } .metricas div { padding: 14px 10px; } .metricas strong { font-size: 25px; } .panel mat-card-content { padding: 18px; } .icono-cabecera { display: none; } }

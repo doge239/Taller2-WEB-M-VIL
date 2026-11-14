@@ -1,0 +1,94 @@
+<section class="estudio" aria-labelledby="titulo-estudio">
+  <div class="cabecera">
+    <div><span class="etiqueta">DEL PROMEDIO AL HÁBITO</span><h2 id="titulo-estudio">Tu espacio de estudio</h2>
+      <p>Dedica un momento a esta asignatura y lleva un registro de tu esfuerzo.</p></div>
+    <mat-icon class="icono-cabecera">self_improvement</mat-icon>
+  </div>
+
+  <div class="metricas">
+    <div><strong>{{ tiempoTotal() }}</strong><span>tiempo de estudio (min:s)</span></div>
+    <div><strong>{{ (historial.value() ?? []).length }}</strong><span>sesiones guardadas</span></div>
+    <div><strong>{{ totalMovimientos() }}</strong><span>movimientos registrados</span></div>
+  </div>
+
+  <mat-card appearance="outlined" class="panel">
+    <mat-card-content>
+      @if (propia() && estudio.actual(); as a) {
+        <div class="estado"><span class="punto" [class.en-curso]="a.estado === 'en_curso'"></span>
+          {{ a.estado === 'en_curso' ? 'Sesión en curso' : a.estado === 'pausada' ? 'En pausa' : 'Lista para guardar' }}</div>
+        <h3>{{ a.objetivo }}</h3>
+        <div class="reloj" role="timer" aria-label="Tiempo de estudio">{{ estudio.reloj() }}</div>
+        <div class="datos-sesion">
+          <span><mat-icon>sensors</mat-icon>{{ a.sensor ? estudio.movimientos() + ' movimientos' : 'Sin datos del sensor' }}</span>
+          <span><mat-icon>location_on</mat-icon>{{ a.lugar ? 'Ubicación incluida' : 'Sin ubicación' }}</span>
+        </div>
+        @if (estudio.aviso()) { <p class="aviso" role="status">{{ estudio.aviso() }}</p> }
+        <div class="acciones">
+          @if (a.estado === 'en_curso') {
+            <button mat-stroked-button (click)="estudio.pausar()"><mat-icon>pause</mat-icon>Pausar</button>
+          } @else if (a.estado === 'pausada') {
+            <button mat-flat-button (click)="estudio.reanudar()" [disabled]="estudio.preparando()"><mat-icon>play_arrow</mat-icon>{{ estudio.preparando() ? 'Preparando…' : 'Continuar' }}</button>
+          }
+          @if (a.estado !== 'terminada') {
+            <button mat-flat-button (click)="estudio.terminar()" [disabled]="estudio.segundos() < 1 || estudio.preparando()"><mat-icon>done</mat-icon>Terminar</button>
+          } @else {
+            <button mat-flat-button (click)="guardar()" [disabled]="estudio.ocupado() || estudio.segundos() < 1">
+              <mat-icon>cloud_upload</mat-icon>{{ estudio.ocupado() ? 'Guardando…' : 'Guardar sesión' }}</button>
+            <p class="ayuda">Si falla la conexión, puedes reintentar sin duplicar la sesión. Guarda antes de cerrar la app.</p>
+          }
+          <button mat-button (click)="descartar()" [disabled]="estudio.ocupado()">Descartar</button>
+        </div>
+      } @else if (estudio.actual(); as otra) {
+        <h3>Tienes una sesión pendiente en {{ otra.nombre }}</h3>
+        <p>Guarda o descarta esa sesión antes de empezar otra.</p>
+        <a mat-stroked-button [routerLink]="['/asignaturas', otra.asignaturaId]">Volver a la sesión</a>
+      } @else {
+        <h3>Un objetivo, un momento de foco</h3>
+        <mat-form-field appearance="outline" class="objetivo">
+          <mat-label>¿Qué vas a estudiar?</mat-label>
+          <input matInput maxlength="160" placeholder="Ej.: repasar derivadas para el certamen" [value]="objetivo()"
+            (input)="objetivo.set($any($event.target).value)" />
+        </mat-form-field>
+        <div class="lugar">
+          <div><strong>¿Dónde vas a estudiar?</strong><p>Opcional. Solo se guarda este punto con tu sesión, sin seguimiento de tu recorrido.</p></div>
+          <button mat-stroked-button (click)="ubicar()" [disabled]="buscandoLugar()">
+            <mat-icon>my_location</mat-icon>{{ buscandoLugar() ? 'Buscando GPS…' : lugar() ? 'Actualizar ubicación' : 'Añadir ubicación' }}</button>
+        </div>
+        @if (buscandoLugar()) { <mat-progress-bar mode="indeterminate" /> }
+        @if (lugar(); as l) {
+          <p class="coordenadas">{{ l.latitud | number:'1.4-4' }}, {{ l.longitud | number:'1.4-4' }} · precisión ±{{ l.precision_metros | number:'1.0-0' }} m
+            <button mat-button (click)="lugar.set(null)">Quitar</button></p>
+        }
+        @if (errorLugar()) { <p class="aviso" role="alert">{{ errorLugar() }}</p> }
+        <p class="ayuda">En Android, el acelerómetro registra movimientos del teléfono durante la sesión. Deja el teléfono sobre la mesa. Al salir de la app, la sesión se pausa. Guarda antes de cerrarla: los borradores están en memoria.</p>
+        <button mat-flat-button (click)="iniciar()" [disabled]="!objetivo().trim() || buscandoLugar() || estudio.ocupado()">
+          <mat-icon>play_arrow</mat-icon>{{ estudio.ocupado() ? 'Preparando…' : 'Empezar a estudiar' }}</button>
+      }
+    </mat-card-content>
+  </mat-card>
+
+  <div class="historial-cabecera"><h3>Historial de estudio</h3><button mat-button (click)="historial.reload()">Actualizar</button></div>
+  @if (historial.isLoading()) { <mat-progress-bar mode="indeterminate" /> }
+  @if (historial.error()) {
+    <p class="aviso" role="alert">No se pudo cargar el historial. Comprueba la conexión y que el backend esté actualizado para el Taller 3.</p>
+    <button mat-stroked-button (click)="historial.reload()">Reintentar</button>
+  } @else if (historial.hasValue() && !historial.value().length) {
+    <div class="vacio"><mat-icon>auto_stories</mat-icon><p>Tu próxima sesión será la primera.</p><small>El historial te ayudará a ver el esfuerzo que hay detrás de tus notas.</small></div>
+  } @else {
+    @for (s of historial.value() ?? []; track s.id) {
+      <article class="registro">
+        <div class="registro-icono"><mat-icon>menu_book</mat-icon></div>
+        <div class="registro-detalle"><strong>{{ s.objetivo }}</strong><small>{{ s.inicio | date:'dd/MM/yyyy · HH:mm' }}</small>
+          <p>{{ duracion(s.duracion_segundos) }} min:s · {{ s.sensor_disponible ? s.movimientos + ' movimientos' : 'Sin datos del sensor' }}</p>
+          @if (s.latitud !== null) {
+            <a [href]="mapa(s)" target="_blank" rel="noopener noreferrer">Ver lugar de estudio ↗</a>
+            @if (s.precision_metros !== null) { <small>Precisión ±{{ s.precision_metros | number:'1.0-0' }} m</small> }
+          }
+        </div>
+        <button mat-icon-button aria-label="Eliminar sesión de estudio" (click)="eliminar(s)"><mat-icon>delete_outline</mat-icon></button>
+      </article>
+    }
+    @if ((historial.value() ?? []).length >= 100) { <p class="ayuda">Se muestran las últimas 100 sesiones. Los totales corresponden a estas sesiones.</p> }
+  }
+  <p class="nota-sensor">Los movimientos son una referencia del uso del teléfono, no una medida de tu atención ni de tu rendimiento.</p>
+</section>

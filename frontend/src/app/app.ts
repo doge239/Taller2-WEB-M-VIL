@@ -6,6 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { AuthService } from './services/auth.service';
+import { AndroidNavigationService } from './services/android-navigation.service';
+import { EstudioService } from './services/estudio.service';
 
 @Component({
   selector: 'app-root',
@@ -23,9 +25,12 @@ import { AuthService } from './services/auth.service';
   styleUrl: './app.scss',
 })
 export class App {
+  private readonly androidNavigation = inject(AndroidNavigationService);
   protected readonly auth = inject(AuthService);
+  protected readonly estudio = inject(EstudioService);
 
   protected cerrarSesion(): void {
+    if (this.estudio.actual() && !window.confirm('Tienes una sesión de estudio sin guardar. ¿Cerrar sesión y descartarla?')) return;
     this.auth.logout();
   }
 }

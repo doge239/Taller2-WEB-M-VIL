@@ -37,5 +37,10 @@
 </mat-toolbar>
 
 <main>
+  @if (estudio.actual(); as sesion) {
+    <a mat-button [routerLink]="['/asignaturas', sesion.asignaturaId]" class="sesion-pendiente">
+      <mat-icon>timer</mat-icon>{{ sesion.nombre }} · {{ estudio.reloj() }} · Volver a tu sesión
+    </a>
+  }
   <router-outlet />
 </main>

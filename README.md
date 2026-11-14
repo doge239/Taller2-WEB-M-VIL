@@ -1,179 +1,258 @@
 # Gestor de Notas Universitarias
 
-Aplicación web para organizar asignaturas y evaluaciones, calcular promedios ponderados y estimar la nota necesaria para alcanzar una meta. Incluye autenticación de usuarios y persistencia en PostgreSQL.
+La ampliación del **Taller 3** incorpora importación y uso compartido de
+asignaturas por QR, sesiones de estudio con GPS y acelerómetro Android,
+historial privado y construcción automática del APK con GitHub Actions.
+Consulta [TALLER3.md](TALLER3.md) para la arquitectura, relación con la pauta
+y guion de presentación, y [ANDROID.md](ANDROID.md) para construir e instalar.
+Las nuevas rutas requieren iniciar o desplegar el backend actualizado.
+
+Aplicación web para gestionar asignaturas y evaluaciones académicas con cálculo automático de promedios, nota necesaria y estado de la meta. Construida con **Angular 21**, **FastAPI** y **PostgreSQL**.
+
+---
 
 ## Tecnologías
 
-| Componente | Tecnología |
+| Capa | Tecnología |
 |---|---|
-| Frontend | Angular 21, Angular Material |
-| API | FastAPI, Python 3.12 o superior |
-| Base de datos | PostgreSQL 17 |
+| Frontend | Angular 21 + Angular Material 21 |
+| Backend | Python 3.12+ + FastAPI (`>=0.115,<1`) |
+| Base de datos | PostgreSQL 17 (Docker) |
+| Autenticación | JWT (HS256) + Argon2id |
 | ORM | SQLAlchemy 2 |
-| Autenticación | JWT (HS256) y contraseñas con Argon2id |
 
-## Requisitos
+---
 
-- Python CPython 3.12 o superior. En Windows, usa el lanzador `py` incluido con CPython.
-- Node.js 20.19+, 22.12+ o 24+, y npm 10 o superior.
-- Docker Desktop con Docker Compose v2.
+## Requisitos previos
 
-En Windows, el Python de MSYS no es compatible con el paquete binario `psycopg[binary]` utilizado por el backend. Si `py` no está disponible, instala CPython para Windows desde python.org incluyendo **Python Launcher**, y vuelve a abrir PowerShell.
+| Herramienta | Versión mínima | Verificar |
+|---|---|---|
+| Python | 3.12 | `python --version` |
+| Node.js | 20.19+, 22.12+ o 24+ | `node --version` |
+| npm | 10 | `npm --version` |
+| Docker + Docker Compose | 24+ / v2 | `docker --version`, `docker compose version` |
 
-## Estructura
+---
 
-- `backend/app/models.py`: modelos SQLAlchemy de usuarios, asignaturas y evaluaciones.
-- `backend/app/routers/`: endpoints de autenticación, asignaturas y evaluaciones.
-- `backend/app/schemas/`: validación de datos de entrada y salida.
-- `backend/app/security.py`: hashing de contraseñas y autenticación JWT.
-- `backend/app/calculos.py`: cálculos de promedios y notas necesarias.
-- `backend/app/database.py`: conexión y sesiones de PostgreSQL.
-- `backend/tests/`: pruebas de integración de la API.
-- `frontend/src/app/`: interfaz Angular, páginas, componentes y servicios.
-- `compose.yaml`: servicio PostgreSQL para desarrollo local.
+## Estructura del proyecto
 
-Cada usuario puede tener varias asignaturas y cada asignatura puede incluir varias evaluaciones. Los datos se guardan en PostgreSQL mediante SQLAlchemy. La base parte sin cuentas precargadas: se crea una cuenta desde la opción de registro de la aplicación.
-
-## Configuración
-
-Desde la raíz del repositorio, crea `.env` a partir de la plantilla si todavía no existe.
-
-**Windows PowerShell**
-
-```powershell
-if (-not (Test-Path .env)) { Copy-Item .env.example .env }
+```
+Taller2-WEB-M-VIL/
+├── backend/          # API FastAPI
+│   ├── app/
+│   │   ├── models.py       # Modelos SQLAlchemy
+│   │   ├── schemas/        # Esquemas Pydantic
+│   │   ├── routers/        # Endpoints REST
+│   │   ├── security.py     # JWT y hashing
+│   │   ├── calculos.py     # Lógica de notas
+│   │   ├── database.py     # Conexión PostgreSQL
+│   │   └── main.py         # App FastAPI + CORS
+│   ├── tests/
+│   │   └── test_api.py     # Tests de integración
+│   ├── requirements.txt
+│   └── requirements-test.txt
+├── frontend/         # SPA Angular
+│   └── src/app/
+│       ├── pages/          # Login, Registro, Asignaturas, Detalle
+│       ├── components/     # Diálogos reutilizables
+│       ├── services/       # HTTP + estado reactivo (Signals)
+│       ├── guards/         # Protección de rutas
+│       └── interceptors/   # JWT automático
+├── compose.yaml      # PostgreSQL en Docker
+└── .env.example      # Variables de entorno (plantilla)
 ```
 
-**macOS / Linux**
+---
+
+## Configuración inicial
+
+### 1. Copiar las variables de entorno
+
+```powershell
+# Windows PowerShell, desde la raíz del proyecto
+Copy-Item .env.example .env
+```
 
 ```bash
-if [ ! -f .env ]; then cp .env.example .env; fi
+# macOS / Linux, desde la raíz del proyecto
+cp .env.example .env
 ```
 
-Revisa los valores de `.env`. Cambia el secreto JWT por uno aleatorio de al menos 32 caracteres. Puedes generarlo con:
+Edita `.env` y completa los valores:
 
-```powershell
-py -3 -c "import secrets; print(secrets.token_hex(32))"
+```env
+POSTGRES_USER=notas
+POSTGRES_PASSWORD=tu_clave_segura_aqui
+POSTGRES_DB=gestor_notas
+POSTGRES_PORT=55433
+POSTGRES_HOST=127.0.0.1
+JWT_SECRET=reemplaza_esto_por_un_secreto_de_al_menos_32_caracteres
+JWT_ACCESS_TOKEN_EXPIRE_MINUTES=30
+ALLOWED_ORIGINS=http://localhost:4200
 ```
 
-La plantilla usa el puerto local `5433` para PostgreSQL. Si ese puerto está ocupado, elige otro puerto libre y coloca el mismo valor en `POSTGRES_PORT` dentro de `.env`; Docker Compose y el backend leen ese archivo. No subas `.env` al repositorio: está excluido por `.gitignore`.
+> **Importante**: `JWT_SECRET` debe tener al menos 32 caracteres aleatorios.
+> Puedes generar uno con: `python -c "import secrets; print(secrets.token_hex(32))"`
 
-## Ejecutar en Windows
+El backend crea las tablas al iniciar, pero no inserta usuarios ni contraseñas
+de prueba. Cada integrante puede crear su propia cuenta desde `/registro`.
+Los datos de cada usuario se guardan en su base PostgreSQL local.
 
-Abre tres terminales de PowerShell en la raíz del repositorio y mantenlas abiertas mientras utilizas la aplicación.
+## Levantar el proyecto en Windows
 
-### 1. PostgreSQL — Terminal 1
+Abre **tres terminales de PowerShell** en la carpeta raíz del proyecto. Ejecuta los pasos en orden: base de datos, backend y frontend. Mantén las terminales del backend y frontend abiertas mientras uses la aplicación.
+
+### 1. Base de datos (Terminal 1)
 
 ```powershell
+# Desde la raíz. No sobrescribe un .env que ya exista.
+if (-not (Test-Path .env)) { Copy-Item .env.example .env }
 docker compose up -d
 docker compose ps
 ```
 
-Espera a que el servicio `db` muestre el estado `healthy` antes de iniciar el backend. Docker guarda los datos en el volumen `notas_data`.
+Espera a que el servicio `db` muestre `healthy` antes de iniciar el backend. El puerto publicado es el valor de `POSTGRES_PORT` en `.env`; el backend usa ese mismo valor para conectarse. Si cambias el puerto, vuelve a iniciar el servicio con `docker compose up -d`.
 
-### 2. Backend — Terminal 2
+### 2. Backend (Terminal 2)
 
 ```powershell
 cd backend
-py -3 -m venv .venv
+
+# Crear el entorno virtual e instalar dependencias (solo la primera vez)
+python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+
+# Iniciar la API
 .\.venv\Scripts\python.exe -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
-La API queda disponible en <http://127.0.0.1:8000>, la documentación interactiva en <http://127.0.0.1:8000/docs> y el estado de la base en <http://127.0.0.1:8000/api/health>. El health check debe responder `{"estado":"ok","base_de_datos":"conectada"}`.
+El backend queda disponible en:
+- API: http://127.0.0.1:8000
+- Documentación interactiva: http://127.0.0.1:8000/docs
+- Health check: http://127.0.0.1:8000/api/health
 
-### 3. Frontend — Terminal 3
+El health check debe responder `{"estado":"ok","base_de_datos":"conectada"}`. Las tablas se crean automáticamente al iniciar la API (SQLAlchemy `create_all`).
+
+### 3. Frontend (Terminal 3)
 
 ```powershell
 cd frontend
-npm.cmd ci
+
+# Instalar dependencias (solo la primera vez)
+npm.cmd install
+
+# Servidor de desarrollo con proxy al backend
 npm.cmd start
 ```
 
-Abre <http://localhost:4200>. El proxy de desarrollo reenvía las llamadas `/api/*` a la API local del puerto `8000`.
+Abre http://localhost:4200. Registra una cuenta y crea una asignatura para empezar; no hay usuarios de prueba precargados.
 
-## Ejecutar en macOS o Linux
+> El archivo `proxy.conf.json` redirige `/api/*` → `http://127.0.0.1:8000` automáticamente,
+> por lo que no se necesita configurar CORS en desarrollo local.
 
-Prepara `.env` y PostgreSQL desde la raíz del proyecto, igual que en la sección de configuración.
+### macOS / Linux
 
-**Terminal 1 — base de datos**
+Desde la raíz, prepara el entorno con `cp .env.example .env` (si aún no existe) y `docker compose up -d`. En una terminal, inicia el backend con `cd backend && python -m venv .venv && .venv/bin/python -m pip install -r requirements.txt && .venv/bin/python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000`. En otra, inicia el frontend con `cd frontend && npm install && npm start`. Espera a que PostgreSQL esté sano antes de iniciar el backend.
 
-```bash
-docker compose up -d
-docker compose ps
-```
+### Detener los servicios
 
-**Terminal 2 — backend**
+Detén backend y frontend con `Ctrl+C` en sus terminales. Para detener PostgreSQL desde la raíz ejecuta `docker compose down`; los datos siguen guardados en el volumen `notas_data`.
 
-```bash
-cd backend
-python3 -m venv .venv
-.venv/bin/python -m pip install -r requirements.txt
-.venv/bin/python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
-```
+### Si no inicia
 
-**Terminal 3 — frontend**
+- Si `db` no llega a `healthy`, revisa que Docker Desktop esté iniciado y que el puerto indicado por `POSTGRES_PORT` esté libre.
+- Si falla el health check del backend, confirma que la base esté `healthy` y que `.env` tenga el mismo usuario, clave, base y puerto usados por Docker.
+- Si PowerShell bloquea `npm`, usa `npm.cmd` como en los comandos anteriores.
+- Si Angular abre pero no puede llamar a la API, confirma que el backend siga ejecutándose en el puerto `8000`.
 
-```bash
-cd frontend
-npm ci
-npm start
-```
+---
 
-## Pruebas del backend
+## Ejecutar los tests del backend
 
-Las pruebas utilizan SQLite en memoria; no requieren iniciar PostgreSQL. Con el entorno virtual creado desde `backend/`, instala las dependencias de prueba y ejecuta pytest.
-
-**Windows PowerShell**
+Los tests corren con SQLite en memoria (sin necesidad de Docker):
 
 ```powershell
 cd backend
+
+# Instalar dependencias de test
 .\.venv\Scripts\python.exe -m pip install -r requirements-test.txt
+
+# Ejecutar todos los tests
 .\.venv\Scripts\python.exe -m pytest tests/ -v
 ```
 
-**macOS / Linux**
+### Casos de prueba incluidos
 
-```bash
-cd backend
-.venv/bin/python -m pip install -r requirements-test.txt
-.venv/bin/python -m pytest tests/ -v
-```
+| Test | Qué verifica |
+|---|---|
+| `test_docs_and_openapi_are_available` | `/docs` y `/openapi.json` responden correctamente |
+| `test_register_login_duplicate_and_wrong_credentials` | Registro, login, correo duplicado, credenciales incorrectas |
+| `test_private_routes_reject_missing_invalid_and_expired_tokens` | Rutas protegidas rechazan tokens ausentes, inválidos y expirados |
+| `test_assignments_support_complete_crud_and_ignore_client_owner` | CRUD completo de asignaturas + previene forjar propietario |
+| `test_evaluations_support_complete_crud_and_pending_grade` | CRUD completo de evaluaciones con nota pendiente (NULL) |
+| `test_final_average_is_5_6_for_5_at_40_and_6_at_60` | Promedio ponderado: 5×40% + 6×60% = 5.6 |
+| `test_partial_average_and_required_grade_for_remaining_weight` | Nota necesaria y aporte acumulado parciales |
+| `test_pending_evaluations_and_unregistered_weight_are_remaining` | Pendientes y porcentaje sin asignar cuentan como peso restante |
+| `test_out_of_range_grades_are_rejected` | Rechaza notas fuera del rango de 1.0 a 7.0 |
+| `test_weight_total_over_100_is_rejected_on_create_and_update` | Rechaza ponderaciones acumuladas mayores a 100 % |
+| `test_second_user_cannot_read_update_or_delete_first_users_data` | Aislamiento total entre usuarios (404 en datos ajenos) |
 
-Las pruebas cubren registro e inicio de sesión, protección JWT, operaciones CRUD, aislamiento de datos entre usuarios, validación de notas y ponderaciones, y cálculos de promedios.
+---
 
-## Funcionalidades
+## Flujo de uso
 
-1. Crear una cuenta e iniciar sesión.
-2. Crear, editar, listar y eliminar asignaturas.
-3. Agregar evaluaciones con su ponderación y nota; una nota puede quedar pendiente.
-4. Consultar el promedio parcial y el aporte acumulado.
-5. Estimar la nota necesaria en las evaluaciones restantes para alcanzar la meta.
+1. **Registrarse** en `/registro` → el sistema inicia sesión automáticamente
+2. **Crear asignaturas** con nombre, código (opcional) y semestre
+3. **Agregar evaluaciones** a cada asignatura con ponderación y nota (opcional si está pendiente)
+4. **Ver el resumen**: promedio parcial, aporte acumulado, nota necesaria en el porcentaje restante
+5. **Ajustar la meta** de nota (por defecto 4.0) para recalcular en tiempo real
 
-## Seguridad
+---
 
-- Las contraseñas se almacenan como hashes Argon2id.
-- Las rutas privadas requieren un JWT firmado con HS256 y con expiración.
-- Los datos de asignaturas y evaluaciones se aíslan por usuario autenticado.
-- El backend valida las notas y evita que el peso total de evaluaciones supere el 100 %.
-- No se incluyen usuarios ni contraseñas de demostración.
+## Seguridad implementada
+
+- Contraseñas almacenadas con **argon2id** (nunca en texto plano)
+- Tokens JWT con expiración configurable, firmados con HS256
+- Rutas privadas protegidas en el backend (`get_current_user`) y en el frontend (Guard + Interceptor)
+- Aislamiento por `usuario_id`: un usuario nunca puede ver ni modificar datos de otro
+- El frontend cierra sesión automáticamente al detectar un 401 (token expirado)
+- No hay secretos en el repositorio (`.env` está en `.gitignore`)
+
+---
 
 ## Endpoints principales
 
 | Método | Ruta | Descripción |
 |---|---|---|
 | `POST` | `/api/auth/register` | Registrar usuario |
-| `POST` | `/api/auth/login` | Iniciar sesión y obtener un JWT |
-| `GET` | `/api/auth/me` | Obtener el usuario autenticado |
-| `GET`, `POST` | `/api/asignaturas` | Listar y crear asignaturas |
-| `GET`, `PUT`, `DELETE` | `/api/asignaturas/{asignatura_id}` | Consultar, editar y eliminar una asignatura |
-| `GET`, `POST` | `/api/asignaturas/{asignatura_id}/evaluaciones` | Listar y crear evaluaciones |
-| `GET`, `PUT`, `DELETE` | `/api/asignaturas/{asignatura_id}/evaluaciones/{evaluacion_id}` | Consultar, editar y eliminar una evaluación |
-| `GET` | `/api/asignaturas/{asignatura_id}/resumen` | Consultar el resumen calculado de notas |
-| `GET` | `/api/health` | Comprobar la conexión a PostgreSQL |
+| `POST` | `/api/auth/login` | Iniciar sesión → devuelve JWT |
+| `GET` | `/api/auth/me` | Usuario autenticado actual |
+| `GET` | `/api/asignaturas` | Listar mis asignaturas |
+| `POST` | `/api/asignaturas` | Crear asignatura |
+| `GET` | `/api/asignaturas/{asignatura_id}` | Obtener asignatura |
+| `PUT` | `/api/asignaturas/{asignatura_id}` | Editar asignatura |
+| `DELETE` | `/api/asignaturas/{asignatura_id}` | Eliminar asignatura |
+| `GET` | `/api/asignaturas/{asignatura_id}/evaluaciones` | Listar evaluaciones |
+| `POST` | `/api/asignaturas/{asignatura_id}/evaluaciones` | Crear evaluación |
+| `GET` | `/api/asignaturas/{asignatura_id}/evaluaciones/{evaluacion_id}` | Obtener evaluación |
+| `PUT` | `/api/asignaturas/{asignatura_id}/evaluaciones/{evaluacion_id}` | Editar evaluación |
+| `DELETE` | `/api/asignaturas/{asignatura_id}/evaluaciones/{evaluacion_id}` | Eliminar evaluación |
+| `GET` | `/api/asignaturas/{asignatura_id}/resumen` | Resumen de notas calculado |
+| `GET` | `/api/health` | Estado de la base de datos |
 
-La especificación completa de la API está disponible en <http://127.0.0.1:8000/docs> mientras el backend está en ejecución.
+Documentación completa e interactiva en **http://127.0.0.1:8000/docs**
 
-## Detener los servicios
+---
 
-Detén el backend y el frontend con `Ctrl+C` en sus terminales. Desde la raíz, ejecuta `docker compose down` para detener PostgreSQL. Los datos permanecen en el volumen `notas_data`.
+## Variables de entorno — referencia
+
+| Variable | Descripción | Ejemplo |
+|---|---|---|
+| `POSTGRES_USER` | Usuario de PostgreSQL | `notas` |
+| `POSTGRES_PASSWORD` | Contraseña de PostgreSQL | `mi_clave_segura` |
+| `POSTGRES_DB` | Nombre de la base de datos | `gestor_notas` |
+| `POSTGRES_PORT` | Puerto expuesto en el host | `55433` |
+| `POSTGRES_HOST` | Host de PostgreSQL | `127.0.0.1` |
+| `JWT_SECRET` | Secreto aleatorio local para firmar JWT (≥ 32 chars) | Generar con `secrets.token_hex(32)` |
+| `JWT_ACCESS_TOKEN_EXPIRE_MINUTES` | Duración del token en minutos | `30` |
+| `ALLOWED_ORIGINS` | Orígenes CORS permitidos (CSV) | `http://localhost:4200` |

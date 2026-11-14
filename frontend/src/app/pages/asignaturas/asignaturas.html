@@ -4,9 +4,12 @@
       <h1>Mis asignaturas</h1>
       <p class="subtitulo">Hola, {{ auth.usuario()?.nombre }}. Revisa y organiza tus ramos.</p>
     </div>
+    <div class="acciones-fila">
+    <button mat-stroked-button (click)="importarQr()"><mat-icon>qr_code_scanner</mat-icon>Importar QR</button>
     <button mat-flat-button (click)="nueva()">
       <mat-icon>add</mat-icon> Nueva asignatura
     </button>
+    </div>
   </header>
 
   @if (lista.isLoading() && !lista.hasValue()) {

@@ -24,6 +24,9 @@ import { Evaluacion } from '../../models/api.models';
 import { AsignaturasService } from '../../services/asignaturas.service';
 import { EvaluacionesService } from '../../services/evaluaciones.service';
 import { NotificacionService } from '../../services/notificacion.service';
+import { SesionesEstudio } from '../../components/sesiones-estudio/sesiones-estudio';
+import { AsignaturaQr } from '../../components/asignatura-qr/asignatura-qr';
+import { EstudioService } from '../../services/estudio.service';
 
 @Component({
   selector: 'app-asignatura-detalle',
@@ -41,12 +44,14 @@ import { NotificacionService } from '../../services/notificacion.service';
     MatTooltipModule,
     EstadoVacio,
     ResumenAsignaturaCmp,
+    SesionesEstudio,
   ],
   templateUrl: './asignatura-detalle.html',
   styleUrl: './asignatura-detalle.scss',
 })
 export class AsignaturaDetalle {
   private readonly asignaturasService = inject(AsignaturasService);
+  private readonly estudio = inject(EstudioService);
   private readonly evaluacionesService = inject(EvaluacionesService);
   private readonly dialog = inject(MatDialog);
   private readonly router = inject(Router);
@@ -111,14 +116,27 @@ export class AsignaturaDetalle {
       });
   }
 
+  protected compartirQr(): void {
+    const actual = this.asignatura.value();
+    if (actual) this.dialog.open(AsignaturaQr, { data: actual });
+  }
+
+  protected irAEstudio(): void {
+    document.querySelector('app-sesiones-estudio')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   protected eliminarAsignatura(): void {
     const actual = this.asignatura.value();
     if (!actual) return;
+    if (this.estudio.actual()?.asignaturaId === actual.id) {
+      this.notificaciones.error('Guarda o descarta la sesión de estudio antes de eliminar la asignatura.');
+      return;
+    }
     this.dialog
       .open(ConfirmDialog, {
         data: {
           titulo: 'Eliminar asignatura',
-          mensaje: `¿Eliminar "${actual.nombre}" y todas sus evaluaciones?`,
+          mensaje: `¿Eliminar "${actual.nombre}", sus evaluaciones y sus sesiones de estudio?`,
           textoConfirmar: 'Eliminar',
         },
       })
