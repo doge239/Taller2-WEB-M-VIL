@@ -3,8 +3,7 @@
 La ampliación del **Taller 3** incorpora importación y uso compartido de
 asignaturas por QR, sesiones de estudio con GPS y acelerómetro Android,
 historial privado y construcción automática del APK con GitHub Actions.
-Consulta [TALLER3.md](TALLER3.md) para la arquitectura, relación con la pauta
-y guion de presentación, y [ANDROID.md](ANDROID.md) para construir e instalar.
+Consulta [ANDROID.md](ANDROID.md) para construir e instalar la aplicación.
 Las nuevas rutas requieren iniciar o desplegar el backend actualizado.
 
 La versión Android 1.1 incorpora un panel con promedios y notas pendientes,

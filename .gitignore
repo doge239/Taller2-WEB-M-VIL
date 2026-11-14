@@ -16,3 +16,11 @@
 backend/artifacts/
 frontend/artifacts/
 **/.npm-cache/
+
+# Material académico y guías personales: conservar solo en el equipo local.
+/Taller_*.pdf
+/taller_*.pdf
+/GUIA_*.md
+/GUIA_*.txt
+/EXPLICACION_*.txt
+/TALLER3.md

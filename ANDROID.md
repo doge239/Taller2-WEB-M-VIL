@@ -2,7 +2,6 @@
 
 El proyecto Android está en `frontend/android`, con identificador `cl.gestornotas.app`.
 El Taller 3 añade QR, GPS y acelerómetro nativo con historial de estudio.
-Consulta [TALLER3.md](TALLER3.md) para el flujo de uso, arquitectura y Demo Day.
 El dispositivo debe tener Android 8.0 / API 26 o posterior.
 
 La interfaz incluye navegación inferior, panel académico, actividad de estudio
